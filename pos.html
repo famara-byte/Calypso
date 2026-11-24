@@ -252,11 +252,6 @@
     <p class="ledger-totals" id="ledgerTotals"></p>
     <div id="history"></div>
   </section>
-
-  <section aria-label="Latest reviews">
-    <div class="sec-head"><h2>Latest reviews</h2></div>
-    <div id="reviews"></div>
-  </section>
 </main>
 
 <footer class="p-footer">
@@ -547,12 +542,6 @@ var CalypsoStore = (function () {
   var STATUS_LABELS = { 'new': 'Received', 'preparing': 'Preparing', 'ready': 'Ready', 'served': 'Served' };
   var methodByTable = {};
 
-  function starsStr(n) {
-    var s = '';
-    for (var i = 1; i <= 5; i++) s += (i <= n ? '★' : '☆');
-    return s;
-  }
-
   function billHtml(table, orders) {
     var grand = 0, paidSum = 0;
     orders.forEach(function (o) {
@@ -673,19 +662,6 @@ var CalypsoStore = (function () {
       }).join('');
     }
 
-    /* Latest reviews (read-only) */
-    var reviews = S.loadReviews().slice().sort(function (a, b) { return b.ts - a.ts; }).slice(0, 8);
-    var revEl = document.getElementById('reviews');
-    if (!reviews.length) {
-      revEl.innerHTML = '<p class="empty">No reviews yet.</p>';
-    } else {
-      revEl.innerHTML = reviews.map(function (r) {
-        return '<div class="review-row"><div class="review-top"><span class="review-stars" aria-label="' + r.stars + ' out of 5 stars">' + starsStr(r.stars) + '</span>' +
-          '<span class="review-meta">Table ' + r.table + ' · ' + S.timeStr(r.ts) + '</span></div>' +
-          (r.comment ? '<p class="review-comment">“' + S.esc(r.comment) + '”</p>' : '') +
-          '</div>';
-      }).join('');
-    }
   }
 
   function settleBill(table) {

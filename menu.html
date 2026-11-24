@@ -180,9 +180,37 @@
     border-radius:2px;
   }
 
-  /* ---------- Menu items ---------- */
-  .item{padding:20px 0;border-bottom:1px solid var(--line)}
-  .item:last-child{border-bottom:none}
+  /* ---------- Menu items (2-column card grid) ---------- */
+  .items{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
+  .item{
+    display:flex;
+    flex-direction:column;
+    background:var(--card);
+    border:1px solid var(--line);
+    border-radius:var(--radius);
+    padding:12px;
+  }
+  .items .photo-btn{margin-bottom:10px}
+  .items .item-head h3{font-size:20px}
+  .items .dots{display:none}
+  .item-foot{
+    margin-top:auto;
+    padding-top:10px;
+    display:flex;
+    flex-wrap:wrap;
+    align-items:center;
+    gap:8px;
+  }
+  .item-foot .item-actions{margin-top:0;flex:1 1 auto;justify-content:flex-end;min-width:104px}
+  .item-foot .add-btn{width:100%}
+  @media (max-width:560px){
+    .items .desc,.items .ing{
+      display:-webkit-box;
+      -webkit-line-clamp:3;
+      -webkit-box-orient:vertical;
+      overflow:hidden;
+    }
+  }
   .photo-btn{
     position:relative;
     display:block;
@@ -249,7 +277,7 @@
     scroll-margin-top:64px;
   }
   .signatures .sec-head h2{color:var(--sand)}
-  .signatures .item{border-bottom-color:var(--line-dark)}
+  .signatures .item{background:var(--surface-dark);border-color:var(--line-dark)}
   .signatures .dots{border-bottom-color:rgba(227,201,143,.35)}
   .signatures .price{color:var(--gold-soft)}
   .signatures .ing{color:rgba(246,240,226,.68)}
@@ -335,10 +363,6 @@
   .viewer-info{padding:18px 20px 22px}
   .viewer-info .item-head h3{font-size:23px}
 
-  @media (min-width:720px){
-    .signatures .items{display:grid;grid-template-columns:1fr 1fr;gap:0 28px}
-    .signatures .item{border-bottom:1px solid var(--line-dark)}
-  }
   @media (prefers-reduced-motion: reduce){
     html{scroll-behavior:auto}
     dialog#viewer{transform:none;transition:opacity 200ms ease}
@@ -659,6 +683,8 @@
   .pay-method:active{transform:scale(.97)}
   .pay-method.selected{background:var(--surface-dark);border-color:var(--surface-dark);color:var(--sand)}
   .review-block{margin-top:20px;border-top:1px solid var(--line);padding-top:18px;text-align:center}
+  .review-line{margin-top:8px;color:var(--muted);font-size:15.5px}
+  a.review-google{margin-top:14px;text-decoration:none}
   .review-block h3{
     font-family:"Cormorant Garamond",serif;
     font-weight:600;
@@ -815,10 +841,11 @@
           <span class="zoom-badge"><svg viewBox="0 0 24 24" fill="none" stroke="#e3c98f" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/><path d="M11 8v6M8 11h6"/></svg></span>
         </button>
         <div class="item-text">
-          <div class="item-head"><h3>King prawns in filo pastry</h3><span class="dots"></span><span class="price">D450</span></div>
+          <div class="item-head"><h3>King prawns in filo pastry</h3><span class="dots"></span></div>
           <p class="desc">With a sweet chilli dip</p>
           <p class="ing">Cooked with: king prawns, filo pastry, garlic, lemon, sweet chilli and salad leaves.</p>
         </div>
+              <div class="item-foot"><span class="price">D450</span></div>
       </article>
 
       <article class="item">
@@ -827,9 +854,10 @@
           <span class="zoom-badge"><svg viewBox="0 0 24 24" fill="none" stroke="#e3c98f" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/><path d="M11 8v6M8 11h6"/></svg></span>
         </button>
         <div class="item-text">
-          <div class="item-head"><h3>Fried garlic prawns</h3><span class="dots"></span><span class="price">D700</span></div>
+          <div class="item-head"><h3>Fried garlic prawns</h3><span class="dots"></span></div>
           <p class="ing">Cooked with: prawns pan-fried in garlic butter, parsley, lemon and a touch of chilli.</p>
         </div>
+              <div class="item-foot"><span class="price">D700</span></div>
       </article>
 
       <article class="item">
@@ -838,10 +866,11 @@
           <span class="zoom-badge"><svg viewBox="0 0 24 24" fill="none" stroke="#e3c98f" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/><path d="M11 8v6M8 11h6"/></svg></span>
         </button>
         <div class="item-text">
-          <div class="item-head"><h3>Barbecued prawn skewers</h3><span class="dots"></span><span class="price">D850</span></div>
+          <div class="item-head"><h3>Barbecued prawn skewers</h3><span class="dots"></span></div>
           <p class="desc">With chips and dressed salad</p>
           <p class="ing">Cooked with: king prawns, garlic, lemon, mixed peppers, herbs and olive oil.</p>
         </div>
+              <div class="item-foot"><span class="price">D850</span></div>
       </article>
 
       <article class="item">
@@ -850,9 +879,10 @@
           <span class="zoom-badge"><svg viewBox="0 0 24 24" fill="none" stroke="#e3c98f" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/><path d="M11 8v6M8 11h6"/></svg></span>
         </button>
         <div class="item-text">
-          <div class="item-head"><h3>Seafood platter (for two)</h3><span class="dots"></span><span class="price">D1,800</span></div>
+          <div class="item-head"><h3>Seafood platter (for two)</h3><span class="dots"></span></div>
           <p class="ing">Cooked with: grilled fish, king prawns, squid and octopus, with garlic butter, lemon and fresh herbs.</p>
         </div>
+              <div class="item-foot"><span class="price">D1,800</span></div>
       </article>
 
       <article class="item">
@@ -861,10 +891,11 @@
           <span class="zoom-badge"><svg viewBox="0 0 24 24" fill="none" stroke="#e3c98f" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/><path d="M11 8v6M8 11h6"/></svg></span>
         </button>
         <div class="item-text">
-          <div class="item-head"><h3>Charcoal-grilled barracuda</h3><span class="dots"></span><span class="price">D750</span></div>
+          <div class="item-head"><h3>Charcoal-grilled barracuda</h3><span class="dots"></span></div>
           <p class="desc">With garlic butter</p>
           <p class="ing">Cooked with: barracuda charcoal-grilled with garlic butter, lemon and herbs.</p>
         </div>
+              <div class="item-foot"><span class="price">D750</span></div>
       </article>
 
       <article class="item">
@@ -873,10 +904,11 @@
           <span class="zoom-badge"><svg viewBox="0 0 24 24" fill="none" stroke="#e3c98f" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/><path d="M11 8v6M8 11h6"/></svg></span>
         </button>
         <div class="item-text">
-          <div class="item-head"><h3>Peppered steak</h3><span class="dots"></span><span class="price">D950</span></div>
+          <div class="item-head"><h3>Peppered steak</h3><span class="dots"></span></div>
           <p class="desc">With chips</p>
           <p class="ing">Cooked with: beef steak, cracked black peppercorn, cream, garlic and butter.</p>
         </div>
+              <div class="item-foot"><span class="price">D950</span></div>
       </article>
 
       <article class="item">
@@ -885,9 +917,10 @@
           <span class="zoom-badge"><svg viewBox="0 0 24 24" fill="none" stroke="#e3c98f" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/><path d="M11 8v6M8 11h6"/></svg></span>
         </button>
         <div class="item-text">
-          <div class="item-head"><h3>The Calypso Burger</h3><span class="dots"></span><span class="price">D600</span></div>
+          <div class="item-head"><h3>The Calypso Burger</h3><span class="dots"></span></div>
           <p class="ing">Cooked with: homemade beef patty, cheddar, lettuce, tomato, red onion and burger sauce in a toasted bun — with fries.</p>
         </div>
+              <div class="item-foot"><span class="price">D600</span></div>
       </article>
 
       <article class="item">
@@ -896,10 +929,11 @@
           <span class="zoom-badge"><svg viewBox="0 0 24 24" fill="none" stroke="#e3c98f" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/><path d="M11 8v6M8 11h6"/></svg></span>
         </button>
         <div class="item-text">
-          <div class="item-head"><h3>Crêpes</h3><span class="dots"></span><span class="price">D350</span></div>
+          <div class="item-head"><h3>Crêpes</h3><span class="dots"></span></div>
           <p class="desc">With banana and maple syrup</p>
           <p class="ing">Cooked with: flour, eggs and milk batter, filled with banana and maple syrup, dusted with sugar.</p>
         </div>
+              <div class="item-foot"><span class="price">D350</span></div>
       </article>
 
     </div>
@@ -911,52 +945,60 @@
   <div class="wrap">
     <div class="sec-head"><h2>Starters &amp; Light Bites</h2></div>
 
+<div class="items">
     <article class="item">
       <button class="photo-btn" type="button" aria-label="Enlarge photo: King prawns in filo pastry">
         <img src="assets/dish-filo-prawns.jpg" alt="King prawns in filo pastry" loading="lazy">
         <span class="zoom-badge"><svg viewBox="0 0 24 24" fill="none" stroke="#e3c98f" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/><path d="M11 8v6M8 11h6"/></svg></span>
       </button>
       <div class="item-text">
-        <div class="item-head"><h3>King prawns in filo pastry<span class="sig-star" aria-hidden="true">★</span></h3><span class="dots"></span><span class="price">D450</span></div>
+        <div class="item-head"><h3>King prawns in filo pastry<span class="sig-star" aria-hidden="true">★</span></h3><span class="dots"></span></div>
         <p class="desc">With a sweet chilli dip</p>
         <p class="ing">Cooked with: king prawns, filo pastry, garlic, lemon, sweet chilli and salad leaves.</p>
       </div>
+          <div class="item-foot"><span class="price">D450</span></div>
     </article>
 
     <article class="item">
       <div class="item-text">
-        <div class="item-head"><h3>Chinese spring rolls</h3><span class="dots"></span><span class="price">D300</span></div>
+        <div class="item-head"><h3>Chinese spring rolls</h3><span class="dots"></span></div>
         <p class="ing">Cooked with: cabbage, carrots, spring onion and mixed vegetables in crisp pastry, with sweet chilli dip.</p>
       </div>
+          <div class="item-foot"><span class="price">D300</span></div>
     </article>
 
     <article class="item">
       <div class="item-text">
-        <div class="item-head"><h3>Indian chicken satay</h3><span class="dots"></span><span class="price">D350</span></div>
+        <div class="item-head"><h3>Indian chicken satay</h3><span class="dots"></span></div>
         <p class="ing">Cooked with: chicken marinated in turmeric, garlic and ginger, grilled and served with peanut sauce.</p>
       </div>
+          <div class="item-foot"><span class="price">D350</span></div>
     </article>
 
     <article class="item">
       <div class="item-text">
-        <div class="item-head"><h3>Garlic bread</h3><span class="dots"></span><span class="price">D150</span></div>
+        <div class="item-head"><h3>Garlic bread</h3><span class="dots"></span></div>
         <p class="ing">Cooked with: baguette, garlic butter, parsley and mixed herbs, toasted until crisp.</p>
       </div>
+          <div class="item-foot"><span class="price">D150</span></div>
     </article>
 
     <article class="item">
       <div class="item-text">
-        <div class="item-head"><h3>A pint of prawns</h3><span class="dots"></span><span class="price">D600</span></div>
+        <div class="item-head"><h3>A pint of prawns</h3><span class="dots"></span></div>
         <p class="ing">Cooked with: chilled prawns, lemon, garlic mayonnaise and crisp salad leaves.</p>
       </div>
+          <div class="item-foot"><span class="price">D600</span></div>
     </article>
 
     <article class="item">
       <div class="item-text">
-        <div class="item-head"><h3>Tapas selection</h3><span class="dots"></span><span class="price">from D250</span></div>
+        <div class="item-head"><h3>Tapas selection</h3><span class="dots"></span></div>
         <p class="ing">Cooked with: a changing mix of olives, grilled vegetables, seafood and bread — ask for today’s selection.</p>
       </div>
+          <div class="item-foot"><span class="price">from D250</span></div>
     </article>
+    </div>
 
   </div>
 </section>
@@ -966,15 +1008,17 @@
   <div class="wrap">
     <div class="sec-head"><h2>Seafood &amp; Grill</h2></div>
 
+<div class="items">
     <article class="item">
       <button class="photo-btn" type="button" aria-label="Enlarge photo: Fried garlic prawns">
         <img src="assets/dish-garlic-prawns.jpg" alt="Fried garlic prawns" loading="lazy">
         <span class="zoom-badge"><svg viewBox="0 0 24 24" fill="none" stroke="#e3c98f" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/><path d="M11 8v6M8 11h6"/></svg></span>
       </button>
       <div class="item-text">
-        <div class="item-head"><h3>Fried garlic prawns<span class="sig-star" aria-hidden="true">★</span></h3><span class="dots"></span><span class="price">D700</span></div>
+        <div class="item-head"><h3>Fried garlic prawns<span class="sig-star" aria-hidden="true">★</span></h3><span class="dots"></span></div>
         <p class="ing">Cooked with: prawns pan-fried in garlic butter, parsley, lemon and a touch of chilli.</p>
       </div>
+          <div class="item-foot"><span class="price">D700</span></div>
     </article>
 
     <article class="item">
@@ -983,10 +1027,11 @@
         <span class="zoom-badge"><svg viewBox="0 0 24 24" fill="none" stroke="#e3c98f" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/><path d="M11 8v6M8 11h6"/></svg></span>
       </button>
       <div class="item-text">
-        <div class="item-head"><h3>Barbecued prawn skewers<span class="sig-star" aria-hidden="true">★</span></h3><span class="dots"></span><span class="price">D850</span></div>
+        <div class="item-head"><h3>Barbecued prawn skewers<span class="sig-star" aria-hidden="true">★</span></h3><span class="dots"></span></div>
         <p class="desc">With chips and dressed salad</p>
         <p class="ing">Cooked with: king prawns, garlic, lemon, mixed peppers, herbs and olive oil.</p>
       </div>
+          <div class="item-foot"><span class="price">D850</span></div>
     </article>
 
     <article class="item">
@@ -995,9 +1040,10 @@
         <span class="zoom-badge"><svg viewBox="0 0 24 24" fill="none" stroke="#e3c98f" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/><path d="M11 8v6M8 11h6"/></svg></span>
       </button>
       <div class="item-text">
-        <div class="item-head"><h3>Seafood platter (for two)<span class="sig-star" aria-hidden="true">★</span></h3><span class="dots"></span><span class="price">D1,800</span></div>
+        <div class="item-head"><h3>Seafood platter (for two)<span class="sig-star" aria-hidden="true">★</span></h3><span class="dots"></span></div>
         <p class="ing">Cooked with: grilled fish, king prawns, squid and octopus, with garlic butter, lemon and fresh herbs.</p>
       </div>
+          <div class="item-foot"><span class="price">D1,800</span></div>
     </article>
 
     <article class="item">
@@ -1006,33 +1052,38 @@
         <span class="zoom-badge"><svg viewBox="0 0 24 24" fill="none" stroke="#e3c98f" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/><path d="M11 8v6M8 11h6"/></svg></span>
       </button>
       <div class="item-text">
-        <div class="item-head"><h3>Charcoal-grilled barracuda<span class="sig-star" aria-hidden="true">★</span></h3><span class="dots"></span><span class="price">D750</span></div>
+        <div class="item-head"><h3>Charcoal-grilled barracuda<span class="sig-star" aria-hidden="true">★</span></h3><span class="dots"></span></div>
         <p class="desc">With garlic butter</p>
         <p class="ing">Cooked with: barracuda charcoal-grilled with garlic butter, lemon and herbs.</p>
       </div>
+          <div class="item-foot"><span class="price">D750</span></div>
     </article>
 
     <article class="item">
       <div class="item-text">
-        <div class="item-head"><h3>Grilled barracuda and butterfish</h3><span class="dots"></span><span class="price">D700</span></div>
+        <div class="item-head"><h3>Grilled barracuda and butterfish</h3><span class="dots"></span></div>
         <p class="ing">Cooked with: barracuda and butterfish grilled with garlic butter, lemon and fresh herbs.</p>
       </div>
+          <div class="item-foot"><span class="price">D700</span></div>
     </article>
 
     <article class="item">
       <div class="item-text">
-        <div class="item-head"><h3>Beer-battered fish goujons</h3><span class="dots"></span><span class="price">D550</span></div>
+        <div class="item-head"><h3>Beer-battered fish goujons</h3><span class="dots"></span></div>
         <p class="ing">Cooked with: white fish in beer batter, with lemon and tartar sauce.</p>
       </div>
+          <div class="item-foot"><span class="price">D550</span></div>
     </article>
 
     <article class="item">
       <div class="item-text">
-        <div class="item-head"><h3>Scampi and chips</h3><span class="dots"></span><span class="price">D800</span></div>
+        <div class="item-head"><h3>Scampi and chips</h3><span class="dots"></span></div>
         <p class="desc">Whole king prawns in batter</p>
         <p class="ing">Cooked with: whole king prawns in golden batter, with chips, lemon and tartar sauce.</p>
       </div>
+          <div class="item-foot"><span class="price">D800</span></div>
     </article>
+    </div>
 
   </div>
 </section>
@@ -1042,31 +1093,36 @@
   <div class="wrap">
     <div class="sec-head"><h2>Meat &amp; Mains</h2></div>
 
+<div class="items">
     <article class="item">
       <button class="photo-btn" type="button" aria-label="Enlarge photo: Peppered steak">
         <img src="assets/dish-steak.jpg" alt="Peppered steak" loading="lazy">
         <span class="zoom-badge"><svg viewBox="0 0 24 24" fill="none" stroke="#e3c98f" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/><path d="M11 8v6M8 11h6"/></svg></span>
       </button>
       <div class="item-text">
-        <div class="item-head"><h3>Peppered steak<span class="sig-star" aria-hidden="true">★</span></h3><span class="dots"></span><span class="price">D950</span></div>
+        <div class="item-head"><h3>Peppered steak<span class="sig-star" aria-hidden="true">★</span></h3><span class="dots"></span></div>
         <p class="desc">With chips</p>
         <p class="ing">Cooked with: beef steak, cracked black peppercorn, cream, garlic and butter.</p>
       </div>
+          <div class="item-foot"><span class="price">D950</span></div>
     </article>
 
     <article class="item">
       <div class="item-text">
-        <div class="item-head"><h3>Steaks from the grill</h3><span class="dots"></span><span class="price">D900</span></div>
+        <div class="item-head"><h3>Steaks from the grill</h3><span class="dots"></span></div>
         <p class="ing">Cooked with: beef steak, garlic butter and herbs, grilled to your liking.</p>
       </div>
+          <div class="item-foot"><span class="price">D900</span></div>
     </article>
 
     <article class="item">
       <div class="item-text">
-        <div class="item-head"><h3>Chicken Yassa</h3><span class="dots"></span><span class="price">D550</span></div>
+        <div class="item-head"><h3>Chicken Yassa</h3><span class="dots"></span></div>
         <p class="ing">Cooked with: chicken marinated in lemon, onion and mustard, grilled and simmered — served with rice.</p>
       </div>
+          <div class="item-foot"><span class="price">D550</span></div>
     </article>
+    </div>
 
   </div>
 </section>
@@ -1076,37 +1132,43 @@
   <div class="wrap">
     <div class="sec-head"><h2>Burgers, Sandwiches &amp; Salads</h2></div>
 
+<div class="items">
     <article class="item">
       <button class="photo-btn" type="button" aria-label="Enlarge photo: The Calypso Burger">
         <img src="assets/dish-burger.jpg" alt="The Calypso Burger" loading="lazy">
         <span class="zoom-badge"><svg viewBox="0 0 24 24" fill="none" stroke="#e3c98f" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/><path d="M11 8v6M8 11h6"/></svg></span>
       </button>
       <div class="item-text">
-        <div class="item-head"><h3>The Calypso Burger<span class="sig-star" aria-hidden="true">★</span></h3><span class="dots"></span><span class="price">D600</span></div>
+        <div class="item-head"><h3>The Calypso Burger<span class="sig-star" aria-hidden="true">★</span></h3><span class="dots"></span></div>
         <p class="ing">Cooked with: homemade beef patty, cheddar, lettuce, tomato, red onion and burger sauce in a toasted bun — with fries.</p>
       </div>
+          <div class="item-foot"><span class="price">D600</span></div>
     </article>
 
     <article class="item">
       <div class="item-text">
-        <div class="item-head"><h3>Homemade beef burgers</h3><span class="dots"></span><span class="price">D550</span></div>
+        <div class="item-head"><h3>Homemade beef burgers</h3><span class="dots"></span></div>
         <p class="ing">Cooked with: beef patty, lettuce, tomato and onion in a toasted bun — with fries.</p>
       </div>
+          <div class="item-foot"><span class="price">D550</span></div>
     </article>
 
     <article class="item">
       <div class="item-text">
-        <div class="item-head"><h3>Sandwiches and paninis</h3><span class="dots"></span><span class="price">from D300</span></div>
+        <div class="item-head"><h3>Sandwiches and paninis</h3><span class="dots"></span></div>
         <p class="ing">Made with: fresh bread, cheese, tomato and lettuce, with your choice of chicken, tuna or vegetables.</p>
       </div>
+          <div class="item-foot"><span class="price">from D300</span></div>
     </article>
 
     <article class="item">
       <div class="item-text">
-        <div class="item-head"><h3>Fresh salads</h3><span class="dots"></span><span class="price">from D300</span></div>
+        <div class="item-head"><h3>Fresh salads</h3><span class="dots"></span></div>
         <p class="ing">Made with: lettuce, tomato, cucumber, peppers and olives with a lemon and olive oil dressing.</p>
       </div>
+          <div class="item-foot"><span class="price">from D300</span></div>
     </article>
+    </div>
 
   </div>
 </section>
@@ -1116,24 +1178,28 @@
   <div class="wrap">
     <div class="sec-head"><h2>Breakfast &amp; Sweet</h2></div>
 
+<div class="items">
     <article class="item">
       <button class="photo-btn" type="button" aria-label="Enlarge photo: Crêpes">
         <img src="assets/dish-crepes.jpg" alt="Crêpes" loading="lazy">
         <span class="zoom-badge"><svg viewBox="0 0 24 24" fill="none" stroke="#e3c98f" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/><path d="M11 8v6M8 11h6"/></svg></span>
       </button>
       <div class="item-text">
-        <div class="item-head"><h3>Crêpes<span class="sig-star" aria-hidden="true">★</span></h3><span class="dots"></span><span class="price">D350</span></div>
+        <div class="item-head"><h3>Crêpes<span class="sig-star" aria-hidden="true">★</span></h3><span class="dots"></span></div>
         <p class="desc">With banana and maple syrup</p>
         <p class="ing">Cooked with: flour, eggs and milk batter, filled with banana and maple syrup, dusted with sugar.</p>
       </div>
+          <div class="item-foot"><span class="price">D350</span></div>
     </article>
 
     <article class="item">
       <div class="item-text">
-        <div class="item-head"><h3>Desserts of the day</h3><span class="dots"></span><span class="price">from D250</span></div>
+        <div class="item-head"><h3>Desserts of the day</h3><span class="dots"></span></div>
         <p class="ing">Made with: seasonal fruit, cream and house sauces — ask your server for today’s dessert.</p>
       </div>
+          <div class="item-foot"><span class="price">from D250</span></div>
     </article>
+    </div>
 
   </div>
 </section>
@@ -1143,16 +1209,18 @@
   <div class="wrap">
     <div class="sec-head"><h2>Drinks &amp; Cocktails</h2></div>
 
+<div class="items">
     <article class="item">
       <button class="photo-btn" type="button" aria-label="Enlarge photo: Frozen strawberry daiquiri">
         <img src="assets/drink-daiquiri.jpg" alt="Frozen strawberry daiquiri" loading="lazy">
         <span class="zoom-badge"><svg viewBox="0 0 24 24" fill="none" stroke="#e3c98f" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/><path d="M11 8v6M8 11h6"/></svg></span>
       </button>
       <div class="item-text">
-        <div class="item-head"><h3>Frozen strawberry daiquiri</h3><span class="dots"></span><span class="price">D350</span></div>
+        <div class="item-head"><h3>Frozen strawberry daiquiri</h3><span class="dots"></span></div>
         <p class="desc">Blended icy, with fresh strawberry and lime</p>
         <p class="ing">Made with: white rum, fresh strawberries, lime juice, sugar and crushed ice.</p>
       </div>
+          <div class="item-foot"><span class="price">D350</span></div>
     </article>
 
     <article class="item">
@@ -1161,10 +1229,11 @@
         <span class="zoom-badge"><svg viewBox="0 0 24 24" fill="none" stroke="#e3c98f" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/><path d="M11 8v6M8 11h6"/></svg></span>
       </button>
       <div class="item-text">
-        <div class="item-head"><h3>Signature cocktails</h3><span class="dots"></span><span class="price">from D300</span></div>
+        <div class="item-head"><h3>Signature cocktails</h3><span class="dots"></span></div>
         <p class="desc">Mixed at the bar, made for golden hour</p>
         <p class="ing">Made with: house spirits, tropical fruit juices, fresh lime and fruit garnish.</p>
       </div>
+          <div class="item-foot"><span class="price">from D300</span></div>
     </article>
 
     <article class="item">
@@ -1173,24 +1242,27 @@
         <span class="zoom-badge"><svg viewBox="0 0 24 24" fill="none" stroke="#e3c98f" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/><path d="M11 8v6M8 11h6"/></svg></span>
       </button>
       <div class="item-text">
-        <div class="item-head"><h3>Local beer</h3><span class="dots"></span><span class="price">D150</span></div>
+        <div class="item-head"><h3>Local beer</h3><span class="dots"></span></div>
         <p class="desc">Served ice-cold, best at a lagoon-side table</p>
         <p class="ing">Made with: brewed lager from malt, hops and yeast — served ice-cold.</p>
       </div>
+          <div class="item-foot"><span class="price">D150</span></div>
     </article>
 
     <article class="item">
       <div class="item-text">
-        <div class="item-head"><h3>Imported beer</h3><span class="dots"></span><span class="price">D200</span></div>
+        <div class="item-head"><h3>Imported beer</h3><span class="dots"></span></div>
         <p class="ing">Made with: brewed lager from malt, hops and yeast — served chilled.</p>
       </div>
+          <div class="item-foot"><span class="price">D200</span></div>
     </article>
 
     <article class="item">
       <div class="item-text">
-        <div class="item-head"><h3>Wine by the glass</h3><span class="dots"></span><span class="price">D300</span></div>
+        <div class="item-head"><h3>Wine by the glass</h3><span class="dots"></span></div>
         <p class="desc">Poured from the house selection — ask your server for today's red, white or rosé.</p>
       </div>
+          <div class="item-foot"><span class="price">D300</span></div>
     </article>
 
     <article class="item">
@@ -1199,25 +1271,29 @@
         <span class="zoom-badge"><svg viewBox="0 0 24 24" fill="none" stroke="#e3c98f" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/><path d="M11 8v6M8 11h6"/></svg></span>
       </button>
       <div class="item-text">
-        <div class="item-head"><h3>Fresh tropical juices</h3><span class="dots"></span><span class="price">D150</span></div>
+        <div class="item-head"><h3>Fresh tropical juices</h3><span class="dots"></span></div>
         <p class="desc">Mango, pineapple and the fruit of the day</p>
         <p class="ing">Made with: fresh mango, pineapple and seasonal tropical fruit, pressed to order.</p>
       </div>
+          <div class="item-foot"><span class="price">D150</span></div>
     </article>
 
     <article class="item">
       <div class="item-text">
-        <div class="item-head"><h3>Soft drinks</h3><span class="dots"></span><span class="price">D80</span></div>
+        <div class="item-head"><h3>Soft drinks</h3><span class="dots"></span></div>
         <p class="desc">Chilled soft drinks — Coca-Cola, Fanta, Sprite and local favourites.</p>
       </div>
+          <div class="item-foot"><span class="price">D80</span></div>
     </article>
 
     <article class="item">
       <div class="item-text">
-        <div class="item-head"><h3>Coffee &amp; tea</h3><span class="dots"></span><span class="price">D100</span></div>
+        <div class="item-head"><h3>Coffee &amp; tea</h3><span class="dots"></span></div>
         <p class="ing">Made with: freshly brewed coffee or tea, served with milk and sugar to taste.</p>
       </div>
+          <div class="item-foot"><span class="price">D100</span></div>
     </article>
+    </div>
 
   </div>
 </section>
@@ -1264,7 +1340,11 @@
       viewerImg.alt = img.getAttribute('alt') || '';
     }
     if (text) {
-      viewerInfo.replaceChildren(text.cloneNode(true));
+      var clone = text.cloneNode(true);
+      var priceEl = item.querySelector('.item-foot .price');
+      var cloneHead = clone.querySelector('.item-head');
+      if (priceEl && cloneHead) cloneHead.appendChild(priceEl.cloneNode(true));
+      viewerInfo.replaceChildren(clone);
     }
     if (typeof dialog.showModal === 'function') {
       dialog.showModal();
@@ -2015,7 +2095,8 @@ var CalypsoStore = (function () {
     var holder = document.createElement('div');
     holder.className = 'item-actions';
     holder.setAttribute('data-name', name);
-    art.appendChild(holder);
+    var foot = art.querySelector('.item-foot');
+    (foot || art).appendChild(holder);
     holders.push(holder);
   });
 
@@ -2321,14 +2402,8 @@ var CalypsoStore = (function () {
       html +=
         '<div class="review-block" id="reviewBlock">' +
           '<h3>How was your meal?</h3>' +
-          '<div class="stars" role="radiogroup" aria-label="Star rating">' +
-            [1, 2, 3, 4, 5].map(function (i) {
-              return '<button type="button" class="star-btn" data-star="' + i + '" role="radio" aria-checked="false" aria-label="' + i + ' star' + (i > 1 ? 's' : '') + '">★</button>';
-            }).join('') +
-          '</div>' +
-          '<p class="review-hint" id="reviewHint"></p>' +
-          '<textarea class="comment-input" id="reviewComment" rows="2" placeholder="Add a comment (optional)"></textarea>' +
-          '<button type="button" class="primary-btn" id="reviewSend" style="margin-top:14px">Send review</button>' +
+          '<p class="review-line">Your review on Google helps Calypso a lot.</p>' +
+          '<a class="primary-btn review-google" id="reviewGoogle" href="https://www.google.com/maps?cid=7195551674078594361" target="_blank" rel="noopener">Review us on Google</a>' +
           '<button type="button" class="ghost-btn" id="reviewSkip">Not now</button>' +
         '</div>';
     }
@@ -2337,27 +2412,8 @@ var CalypsoStore = (function () {
     payFoot.querySelector('#paidCloseBtn').addEventListener('click', function () { closeSheet(payDialog); });
 
     if (!already) {
-      var rating = 0;
-      var starBtns = payBody.querySelectorAll('.star-btn');
-      starBtns.forEach(function (btn) {
-        btn.addEventListener('click', function () {
-          rating = parseInt(btn.getAttribute('data-star'), 10);
-          starBtns.forEach(function (b) {
-            var on = parseInt(b.getAttribute('data-star'), 10) <= rating;
-            b.classList.toggle('on', on);
-            b.setAttribute('aria-checked', on && parseInt(b.getAttribute('data-star'), 10) === rating ? 'true' : 'false');
-          });
-          payBody.querySelector('#reviewHint').textContent = '';
-        });
-      });
       payBody.querySelector('#reviewSkip').addEventListener('click', function () { closeSheet(payDialog); });
-      payBody.querySelector('#reviewSend').addEventListener('click', function () {
-        if (!rating) {
-          payBody.querySelector('#reviewHint').textContent = 'Please tap a star rating first.';
-          return;
-        }
-        var comment = payBody.querySelector('#reviewComment').value.trim();
-        S.saveReview({ table: table, stars: rating, comment: comment, ts: Date.now(), orderIds: paidIds.slice() });
+      payBody.querySelector('#reviewGoogle').addEventListener('click', function () {
         var block = payBody.querySelector('#reviewBlock');
         block.replaceWith(Object.assign(document.createElement('div'), { className: 'review-thanks' }));
         payBody.querySelector('.review-thanks').textContent = 'Thank you — we hope to see you again at Calypso.';
