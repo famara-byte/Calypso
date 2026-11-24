@@ -199,38 +199,104 @@
 
 <script>
 /* Calypso demo — shared order store (same code in menu.html, kitchen.html, pos.html).
-   State lives in localStorage; open tabs stay in sync via BroadcastChannel + storage events. */
+   State lives in a shared Supabase database, so an order placed on any device
+   appears on every screen. Each page polls for changes; open tabs on the same
+   device also sync instantly via BroadcastChannel. */
 var CalypsoStore = (function () {
-  var ORDERS_KEY = 'calypso_orders_v1';
-  var COUNTER_KEY = 'calypso_counter_v1';
-  var REVIEWS_KEY = 'calypso_reviews_v1';
+  var API_BASE = 'https://ffiwqnsufsuropoqjnsm.supabase.co/rest/v1';
+  var API_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZmaXdxbnN1ZnN1cm9wb3FqbnNtIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTU0ODYxMDAsImV4cCI6MjExMTA2MjEwMH0.su55a-FRoLkNpGaUEIrFmx8HNQdoIX4ukAUD0cypO4w';
   var bc = null;
   try {
     if (typeof BroadcastChannel !== 'undefined') bc = new BroadcastChannel('calypso_orders');
   } catch (e) { bc = null; }
 
-  function load(key, fallback) {
-    try {
-      var raw = localStorage.getItem(key);
-      return raw ? JSON.parse(raw) : fallback;
-    } catch (e) { return fallback; }
+  var ordersCache = [];
+  var reviewsCache = [];
+  var ordersJson = stableStringify([]);
+  var reviewsJson = stableStringify([]);
+  var notifiedOrdersJson = ordersJson;
+  var notifiedReviewsJson = reviewsJson;
+  var listeners = [];
+  var mutationSeq = 0;
+  var refreshPromise = null;
+
+  function stableStringify(v) {
+    if (v === null || typeof v !== 'object') return JSON.stringify(v);
+    if (Array.isArray(v)) {
+      return '[' + v.map(function (x) { return stableStringify(x); }).join(',') + ']';
+    }
+    return '{' + Object.keys(v).sort().map(function (k) {
+      return JSON.stringify(k) + ':' + stableStringify(v[k]);
+    }).join(',') + '}';
   }
-  function save(key, value) {
-    try { localStorage.setItem(key, JSON.stringify(value)); } catch (e) {}
-    if (bc) { try { bc.postMessage({ key: key, at: Date.now() }); } catch (e) {} }
+
+  function dataOf(o) {
+    var c = {};
+    Object.keys(o).forEach(function (k) { if (k !== '_pk') c[k] = o[k]; });
+    return c;
+  }
+  function cacheJson() { return stableStringify(ordersCache.map(dataOf)); }
+
+  function ping() {
+    if (bc) { try { bc.postMessage({ type: 'calypso-refresh', at: Date.now() }); } catch (e) {} }
+  }
+  function notifyIfChanged() {
+    if (ordersJson === notifiedOrdersJson && reviewsJson === notifiedReviewsJson) return;
+    notifiedOrdersJson = ordersJson;
+    notifiedReviewsJson = reviewsJson;
+    listeners.slice().forEach(function (fn) { try { fn(); } catch (e) {} });
   }
   function onChange(fn) {
-    if (bc) bc.onmessage = function () { fn(); };
-    window.addEventListener('storage', function (e) {
-      if (e.key === null || e.key === ORDERS_KEY || e.key === REVIEWS_KEY || e.key === COUNTER_KEY) fn();
+    listeners.push(fn);
+    notifyIfChanged();
+  }
+
+  function api(method, path, body, extraHeaders) {
+    var headers = {
+      'apikey': API_KEY,
+      'Authorization': 'Bearer ' + API_KEY,
+      'Content-Type': 'application/json'
+    };
+    if (extraHeaders) Object.keys(extraHeaders).forEach(function (k) { headers[k] = extraHeaders[k]; });
+    var opts = { method: method, headers: headers };
+    if (body !== undefined) opts.body = JSON.stringify(body);
+    return fetch(API_BASE + path, opts).then(function (res) {
+      if (!res.ok) throw new Error('Calypso store: ' + method + ' ' + path + ' failed (' + res.status + ')');
+      if (method === 'GET') return res.json();
+      return null;
     });
   }
 
-  function loadOrders() {
-    var o = load(ORDERS_KEY, []);
-    return Array.isArray(o) ? o : [];
+  function refresh() {
+    if (refreshPromise) return refreshPromise;
+    var seqAtStart = mutationSeq;
+    refreshPromise = Promise.all([
+      api('GET', '/calypso_orders?select=id,data&order=created_at.asc'),
+      api('GET', '/calypso_reviews?select=id,data&order=created_at.asc')
+    ]).then(function (res) {
+      refreshPromise = null;
+      if (seqAtStart !== mutationSeq) { refresh(); return; } /* a local change landed mid-flight — this snapshot may be stale, fetch again */
+      var oRows = Array.isArray(res[0]) ? res[0] : [];
+      var rRows = Array.isArray(res[1]) ? res[1] : [];
+      var oj = stableStringify(oRows.map(function (r) { return r.data; }));
+      if (oj !== ordersJson) {
+        ordersCache = oRows.map(function (r) { var o = r.data; o._pk = r.id; return o; });
+        ordersJson = oj;
+      }
+      var rj = stableStringify(rRows.map(function (r) { return r.data; }));
+      if (rj !== reviewsJson) {
+        reviewsCache = rRows.map(function (r) { return r.data; });
+        reviewsJson = rj;
+      }
+      notifyIfChanged();
+    }, function () {
+      refreshPromise = null; /* keep showing the last good data; the next poll retries */
+    });
+    return refreshPromise;
   }
-  function saveOrders(orders) { save(ORDERS_KEY, orders); }
+
+  function loadOrders() { return ordersCache; }
+  function loadReviews() { return reviewsCache; }
 
   function orderTotal(items) {
     return items.reduce(function (sum, i) { return sum + i.price * i.qty; }, 0);
@@ -240,73 +306,123 @@ var CalypsoStore = (function () {
     function p(n) { return (n < 10 ? '0' : '') + n; }
     return d.getFullYear() + '-' + p(d.getMonth() + 1) + '-' + p(d.getDate());
   }
-  function nextOrderId() {
+
+  /* Places an order on the server and resolves with it (including its _pk).
+     Rejects if the order could not be stored — the caller must not show a
+     confirmation in that case. */
+  function placeOrder(table, items, note) {
     var day = dayKey(new Date());
-    var c = load(COUNTER_KEY, { day: day, n: 0 });
-    if (!c || c.day !== day || typeof c.n !== 'number') c = { day: day, n: 0 };
-    c.n += 1;
-    save(COUNTER_KEY, c);
-    return 'A' + c.n;
+    function attempt(triesLeft) {
+      return api('GET', '/calypso_orders?select=id&id=like.' + day + '-*').then(function (rows) {
+        var n = (Array.isArray(rows) ? rows.length : 0) + 1;
+        var pk = day + '-A' + n;
+        var order = {
+          id: 'A' + n,
+          table: table,
+          items: items,
+          note: note || '',
+          status: 'new',
+          pay: 'unpaid',
+          method: null,
+          ts: Date.now()
+        };
+        return api('POST', '/calypso_orders', { id: pk, data: order }, { 'Prefer': 'return=minimal' }).then(function () {
+          var placed = dataOf(order);
+          placed._pk = pk;
+          ordersCache.push(placed);
+          ordersJson = cacheJson();
+          mutationSeq += 1;
+          ping();
+          refresh();
+          return placed;
+        }, function (err) {
+          if (triesLeft > 0) return attempt(triesLeft - 1); /* likely an id clash — recount and retry */
+          throw err;
+        });
+      });
+    }
+    return attempt(1);
   }
 
-  function placeOrder(table, items, note) {
-    var orders = loadOrders();
-    var order = {
-      id: nextOrderId(),
-      table: table,
-      items: items,
-      note: note || '',
-      status: 'new',
-      pay: 'unpaid',
-      method: null,
-      ts: Date.now()
-    };
-    orders.push(order);
-    saveOrders(orders);
-    return order;
+  function findOrder(idOrPk) {
+    var i, o;
+    for (i = 0; i < ordersCache.length; i++) {
+      if (ordersCache[i]._pk === idOrPk) return ordersCache[i];
+    }
+    var todayPrefix = dayKey(new Date()) + '-';
+    var match = null;
+    for (i = 0; i < ordersCache.length; i++) {
+      o = ordersCache[i];
+      if (o.id === idOrPk) {
+        if (o._pk && o._pk.indexOf(todayPrefix) === 0) return o;
+        match = o;
+      }
+    }
+    return match;
+  }
+
+  function patchOrder(order) {
+    return api('PATCH', '/calypso_orders?id=eq.' + encodeURIComponent(order._pk),
+      { data: dataOf(order) }, { 'Prefer': 'return=minimal' });
+  }
+
+  function updateOrders(ids, mutate) {
+    var targets = [];
+    ids.forEach(function (id) {
+      var o = findOrder(id);
+      if (o && targets.indexOf(o) === -1 && mutate(o)) targets.push(o);
+    });
+    if (!targets.length) return Promise.resolve();
+    ordersJson = cacheJson();
+    mutationSeq += 1;
+    ping();
+    return Promise.all(targets.map(patchOrder)).then(
+      function () { refresh(); },
+      function () { refresh(); } /* a failed patch is corrected by the refresh */
+    );
   }
 
   function setStatus(id, status) {
-    var orders = loadOrders();
-    orders.forEach(function (o) { if (o.id === id) o.status = status; });
-    saveOrders(orders);
+    return updateOrders([id], function (o) { o.status = status; return true; });
   }
 
   function payOrders(ids, method) {
     var now = Date.now();
-    var orders = loadOrders();
-    orders.forEach(function (o) {
-      if (ids.indexOf(o.id) !== -1 && o.pay !== 'paid') {
-        o.pay = 'paid';
-        o.method = method;
-        o.paidTs = now;
-      }
+    return updateOrders(ids, function (o) {
+      if (o.pay === 'paid') return false;
+      o.pay = 'paid';
+      o.method = method;
+      o.paidTs = now;
+      return true;
     });
-    saveOrders(orders);
   }
 
   function closeOrders(ids) {
-    var orders = loadOrders();
-    orders.forEach(function (o) { if (ids.indexOf(o.id) !== -1) o.closed = true; });
-    saveOrders(orders);
+    return updateOrders(ids, function (o) { o.closed = true; return true; });
   }
 
-  function loadReviews() {
-    var r = load(REVIEWS_KEY, []);
-    return Array.isArray(r) ? r : [];
-  }
   function saveReview(review) {
-    var r = loadReviews();
-    r.push(review);
-    save(REVIEWS_KEY, r);
+    return api('POST', '/calypso_reviews', { id: 'R' + Date.now(), data: review }, { 'Prefer': 'return=minimal' }).then(function () {
+      reviewsCache.push(review);
+      reviewsJson = stableStringify(reviewsCache);
+      mutationSeq += 1;
+      ping();
+      refresh();
+    }, function () { /* a review is best-effort; the guest already saw the thank-you */ });
   }
 
   function resetDemo() {
-    try {
-      localStorage.removeItem(ORDERS_KEY);
-      localStorage.removeItem(COUNTER_KEY);
-    } catch (e) {}
-    if (bc) { try { bc.postMessage({ key: ORDERS_KEY, at: Date.now() }); } catch (e) {} }
+    ordersCache = [];
+    reviewsCache = [];
+    ordersJson = stableStringify([]);
+    reviewsJson = stableStringify([]);
+    mutationSeq += 1;
+    ping();
+    var filter = '?created_at=gt.1970-01-01T00:00:00Z';
+    return Promise.all([
+      api('DELETE', '/calypso_orders' + filter),
+      api('DELETE', '/calypso_reviews' + filter)
+    ]).then(function () { refresh(); }, function () { refresh(); });
   }
 
   function fmt(n) { return 'D' + Number(n).toLocaleString('en-US'); }
@@ -324,10 +440,17 @@ var CalypsoStore = (function () {
     });
   }
 
+  /* ---- Sync: initial load, a poll every 3 seconds, instant same-device tab pings ---- */
+  if (bc) bc.onmessage = function () { refresh(); };
+  if (typeof document !== 'undefined' && document.addEventListener) {
+    document.addEventListener('visibilitychange', function () {
+      if (!document.hidden) refresh();
+    });
+  }
+  refresh();
+  setInterval(refresh, 3000);
+
   return {
-    ORDERS_KEY: ORDERS_KEY,
-    COUNTER_KEY: COUNTER_KEY,
-    REVIEWS_KEY: REVIEWS_KEY,
     onChange: onChange,
     loadOrders: loadOrders,
     orderTotal: orderTotal,
@@ -344,7 +467,6 @@ var CalypsoStore = (function () {
     esc: esc
   };
 })();
-
 </script>
 <script>
 (function () {
@@ -357,6 +479,7 @@ var CalypsoStore = (function () {
     'ready': { label: 'Served', status: 'served' }
   };
   var seenIds = null;
+  var hadData = false;
 
   function elapsedText(ts) {
     var mins = Math.max(0, Math.floor((Date.now() - ts) / 60000));
@@ -389,7 +512,8 @@ var CalypsoStore = (function () {
   function render() {
     var orders = S.loadOrders().filter(function (o) { return !o.closed && NEXT[o.status]; });
     orders.sort(function (a, b) { return a.ts - b.ts; });
-    var first = (seenIds === null);
+    var first = !hadData;
+    if (orders.length) hadData = true;
     var nowSeen = {};
     ['new', 'preparing', 'ready'].forEach(function (status) {
       var list = orders.filter(function (o) { return o.status === status; });
@@ -400,7 +524,7 @@ var CalypsoStore = (function () {
         return;
       }
       col.innerHTML = list.map(function (o) {
-        var flash = !first && !seenIds[o.id];
+        var flash = !first && !(seenIds && seenIds[o.id]);
         nowSeen[o.id] = true;
         return cardHtml(o, flash);
       }).join('');
