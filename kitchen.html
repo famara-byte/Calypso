@@ -1,0 +1,437 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Calypso — Kitchen</title>
+<meta name="description" content="Calypso Bar and Restaurant — kitchen order board (demonstration system).">
+<meta name="theme-color" content="#0b1f13">
+<link rel="icon" href="icon.webp" type="image/webp">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,500;1,600&family=Jost:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg-dark:#0b1f13;
+    --surface-dark:#12291a;
+    --card-dark:#173420;
+    --gold:#c9a35f;
+    --gold-soft:#e3c98f;
+    --sand:#f6f0e2;
+    --muted-dark:rgba(246,240,226,.62);
+    --line-dark:rgba(227,201,143,.18);
+    --radius:18px;
+    --ease-out:cubic-bezier(0.23,1,0.32,1);
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{
+    font-family:"Jost",system-ui,sans-serif;
+    background:var(--bg-dark);
+    color:var(--sand);
+    font-size:16px;
+    line-height:1.5;
+    -webkit-font-smoothing:antialiased;
+    min-height:100vh;
+  }
+  :focus-visible{outline:2px solid var(--gold);outline-offset:3px;border-radius:6px}
+
+  .k-header{
+    display:flex;
+    align-items:flex-end;
+    justify-content:space-between;
+    gap:16px;
+    flex-wrap:wrap;
+    padding:30px 26px 20px;
+    border-bottom:1px solid var(--line-dark);
+  }
+  .k-header h1{
+    font-family:"Cormorant Garamond",serif;
+    font-weight:600;
+    font-size:38px;
+    line-height:1.05;
+  }
+  .k-header h1 .amp{color:var(--gold-soft);font-style:italic;font-weight:500}
+  .k-sub{margin-top:5px;font-size:13px;letter-spacing:.16em;text-transform:uppercase;color:var(--muted-dark)}
+  .reset-btn{
+    min-height:44px;
+    padding:10px 20px;
+    border-radius:999px;
+    border:1px solid var(--line-dark);
+    background:transparent;
+    color:var(--gold-soft);
+    font-family:"Jost",system-ui,sans-serif;
+    font-size:14px;
+    font-weight:600;
+    cursor:pointer;
+    transition:transform 160ms var(--ease-out), background-color 200ms ease;
+  }
+  .reset-btn:active{transform:scale(.96)}
+
+  .board{
+    display:grid;
+    grid-template-columns:1fr;
+    gap:22px;
+    padding:24px 26px 40px;
+    max-width:1440px;
+    margin:0 auto;
+  }
+  @media (min-width:900px){
+    .board{grid-template-columns:repeat(3,1fr);align-items:start}
+  }
+  .col h2{
+    font-family:"Cormorant Garamond",serif;
+    font-weight:600;
+    font-size:26px;
+    color:var(--sand);
+    display:flex;
+    align-items:baseline;
+    gap:10px;
+  }
+  .col h2::after{content:"";flex:1;height:2px;background:var(--gold);border-radius:2px;opacity:.55}
+  .col .count{font-family:"Jost",system-ui,sans-serif;font-size:14px;font-weight:600;color:var(--gold-soft)}
+  .empty{margin-top:16px;color:var(--muted-dark);font-size:15px;font-style:italic}
+
+  .kcard{
+    background:var(--card-dark);
+    border:1px solid var(--line-dark);
+    border-radius:var(--radius);
+    padding:18px;
+    margin-top:16px;
+  }
+  @keyframes cardIn{
+    from{box-shadow:0 0 0 3px var(--gold)}
+    to{box-shadow:0 0 0 0 rgba(201,163,95,0)}
+  }
+  .kcard.flash{animation:cardIn 1.8s var(--ease-out)}
+  .k-top{display:flex;align-items:baseline;justify-content:space-between;gap:10px}
+  .k-table{
+    font-family:"Cormorant Garamond",serif;
+    font-weight:700;
+    font-size:31px;
+    letter-spacing:.04em;
+    color:var(--gold-soft);
+    line-height:1.1;
+  }
+  .k-id{font-weight:600;font-size:16px;color:var(--sand)}
+  .k-meta{display:flex;align-items:center;gap:8px;margin-top:4px;flex-wrap:wrap}
+  .k-elapsed{font-size:13.5px;color:var(--muted-dark)}
+  .k-time{font-size:13.5px;color:var(--muted-dark)}
+  .paid-badge{
+    display:inline-flex;
+    align-items:center;
+    min-height:24px;
+    padding:2px 10px;
+    border-radius:999px;
+    background:var(--gold);
+    color:#1c2a20;
+    font-size:12px;
+    font-weight:700;
+    letter-spacing:.08em;
+    text-transform:uppercase;
+  }
+  .k-items{list-style:none;margin-top:12px}
+  .k-items li{font-size:16.5px;padding:3px 0;display:flex;gap:8px}
+  .k-qty{font-weight:700;color:var(--gold-soft);white-space:nowrap}
+  .k-note{
+    margin-top:10px;
+    padding:9px 12px;
+    border-left:3px solid var(--gold);
+    background:rgba(201,163,95,.1);
+    font-style:italic;
+    font-size:15px;
+    color:var(--gold-soft);
+    border-radius:0 10px 10px 0;
+  }
+  .k-btn{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    width:100%;
+    min-height:48px;
+    margin-top:16px;
+    padding:12px 18px;
+    border:none;
+    border-radius:999px;
+    background:var(--gold);
+    color:#1c2a20;
+    font-family:"Jost",system-ui,sans-serif;
+    font-size:16px;
+    font-weight:600;
+    cursor:pointer;
+    transition:transform 160ms var(--ease-out), background-color 200ms ease;
+  }
+  .k-btn:active{transform:scale(.97)}
+  @media (hover:hover) and (pointer:fine){
+    .k-btn:hover{background:var(--gold-soft)}
+    .reset-btn:hover{background:rgba(227,201,143,.12)}
+  }
+  @media (prefers-reduced-motion: reduce){
+    .kcard.flash{animation:none}
+    .k-btn,.reset-btn{transition:transform 0ms}
+    .k-btn:active,.reset-btn:active{transform:none}
+  }
+</style>
+</head>
+<body>
+
+<header class="k-header">
+  <div>
+    <h1>Calypso <span class="amp">—</span> Kitchen</h1>
+    <p class="k-sub">Demonstration system</p>
+  </div>
+  <button type="button" class="reset-btn" id="resetBtn">Reset demo</button>
+</header>
+
+<main class="board">
+  <section class="col" aria-label="New orders">
+    <h2>New <span class="count" id="count-new"></span></h2>
+    <div id="col-new"></div>
+  </section>
+  <section class="col" aria-label="Orders being prepared">
+    <h2>Preparing <span class="count" id="count-preparing"></span></h2>
+    <div id="col-preparing"></div>
+  </section>
+  <section class="col" aria-label="Orders ready to serve">
+    <h2>Ready <span class="count" id="count-ready"></span></h2>
+    <div id="col-ready"></div>
+  </section>
+</main>
+
+<script>
+/* Calypso demo — shared order store (same code in menu.html, kitchen.html, pos.html).
+   State lives in localStorage; open tabs stay in sync via BroadcastChannel + storage events. */
+var CalypsoStore = (function () {
+  var ORDERS_KEY = 'calypso_orders_v1';
+  var COUNTER_KEY = 'calypso_counter_v1';
+  var REVIEWS_KEY = 'calypso_reviews_v1';
+  var bc = null;
+  try {
+    if (typeof BroadcastChannel !== 'undefined') bc = new BroadcastChannel('calypso_orders');
+  } catch (e) { bc = null; }
+
+  function load(key, fallback) {
+    try {
+      var raw = localStorage.getItem(key);
+      return raw ? JSON.parse(raw) : fallback;
+    } catch (e) { return fallback; }
+  }
+  function save(key, value) {
+    try { localStorage.setItem(key, JSON.stringify(value)); } catch (e) {}
+    if (bc) { try { bc.postMessage({ key: key, at: Date.now() }); } catch (e) {} }
+  }
+  function onChange(fn) {
+    if (bc) bc.onmessage = function () { fn(); };
+    window.addEventListener('storage', function (e) {
+      if (e.key === null || e.key === ORDERS_KEY || e.key === REVIEWS_KEY || e.key === COUNTER_KEY) fn();
+    });
+  }
+
+  function loadOrders() {
+    var o = load(ORDERS_KEY, []);
+    return Array.isArray(o) ? o : [];
+  }
+  function saveOrders(orders) { save(ORDERS_KEY, orders); }
+
+  function orderTotal(items) {
+    return items.reduce(function (sum, i) { return sum + i.price * i.qty; }, 0);
+  }
+
+  function dayKey(d) {
+    function p(n) { return (n < 10 ? '0' : '') + n; }
+    return d.getFullYear() + '-' + p(d.getMonth() + 1) + '-' + p(d.getDate());
+  }
+  function nextOrderId() {
+    var day = dayKey(new Date());
+    var c = load(COUNTER_KEY, { day: day, n: 0 });
+    if (!c || c.day !== day || typeof c.n !== 'number') c = { day: day, n: 0 };
+    c.n += 1;
+    save(COUNTER_KEY, c);
+    return 'A' + c.n;
+  }
+
+  function placeOrder(table, items, note) {
+    var orders = loadOrders();
+    var order = {
+      id: nextOrderId(),
+      table: table,
+      items: items,
+      note: note || '',
+      status: 'new',
+      pay: 'unpaid',
+      method: null,
+      ts: Date.now()
+    };
+    orders.push(order);
+    saveOrders(orders);
+    return order;
+  }
+
+  function setStatus(id, status) {
+    var orders = loadOrders();
+    orders.forEach(function (o) { if (o.id === id) o.status = status; });
+    saveOrders(orders);
+  }
+
+  function payOrders(ids, method) {
+    var now = Date.now();
+    var orders = loadOrders();
+    orders.forEach(function (o) {
+      if (ids.indexOf(o.id) !== -1 && o.pay !== 'paid') {
+        o.pay = 'paid';
+        o.method = method;
+        o.paidTs = now;
+      }
+    });
+    saveOrders(orders);
+  }
+
+  function closeOrders(ids) {
+    var orders = loadOrders();
+    orders.forEach(function (o) { if (ids.indexOf(o.id) !== -1) o.closed = true; });
+    saveOrders(orders);
+  }
+
+  function loadReviews() {
+    var r = load(REVIEWS_KEY, []);
+    return Array.isArray(r) ? r : [];
+  }
+  function saveReview(review) {
+    var r = loadReviews();
+    r.push(review);
+    save(REVIEWS_KEY, r);
+  }
+
+  function resetDemo() {
+    try {
+      localStorage.removeItem(ORDERS_KEY);
+      localStorage.removeItem(COUNTER_KEY);
+    } catch (e) {}
+    if (bc) { try { bc.postMessage({ key: ORDERS_KEY, at: Date.now() }); } catch (e) {} }
+  }
+
+  function fmt(n) { return 'D' + Number(n).toLocaleString('en-US'); }
+  function isToday(ts) {
+    var d = new Date();
+    d.setHours(0, 0, 0, 0);
+    return ts >= d.getTime();
+  }
+  function timeStr(ts) {
+    return new Date(ts).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+  }
+  function esc(s) {
+    return String(s == null ? '' : s).replace(/[&<>"']/g, function (ch) {
+      return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[ch];
+    });
+  }
+
+  return {
+    ORDERS_KEY: ORDERS_KEY,
+    COUNTER_KEY: COUNTER_KEY,
+    REVIEWS_KEY: REVIEWS_KEY,
+    onChange: onChange,
+    loadOrders: loadOrders,
+    orderTotal: orderTotal,
+    placeOrder: placeOrder,
+    setStatus: setStatus,
+    payOrders: payOrders,
+    closeOrders: closeOrders,
+    loadReviews: loadReviews,
+    saveReview: saveReview,
+    resetDemo: resetDemo,
+    fmt: fmt,
+    isToday: isToday,
+    timeStr: timeStr,
+    esc: esc
+  };
+})();
+
+</script>
+<script>
+(function () {
+  var S = window.CalypsoStore;
+  if (!S) return;
+
+  var NEXT = {
+    'new': { label: 'Start preparing', status: 'preparing' },
+    'preparing': { label: 'Mark ready', status: 'ready' },
+    'ready': { label: 'Served', status: 'served' }
+  };
+  var seenIds = null;
+
+  function elapsedText(ts) {
+    var mins = Math.max(0, Math.floor((Date.now() - ts) / 60000));
+    if (mins < 1) return 'just now';
+    if (mins === 1) return '1 min ago';
+    return mins + ' min ago';
+  }
+
+  function cardHtml(o, flash) {
+    var html = '<article class="kcard' + (flash ? ' flash' : '') + '">';
+    html += '<div class="k-top"><span class="k-table">TABLE ' + o.table + '</span><span class="k-id">' + S.esc(o.id) + '</span></div>';
+    html += '<div class="k-meta"><span class="k-elapsed" data-ts="' + o.ts + '">' + elapsedText(o.ts) + '</span>' +
+            '<span class="k-time">· ordered ' + S.timeStr(o.ts) + '</span>';
+    if (o.pay === 'paid') html += '<span class="paid-badge">Paid</span>';
+    html += '</div>';
+    html += '<ul class="k-items">';
+    o.items.forEach(function (it) {
+      html += '<li><span class="k-qty">' + it.qty + ' ×</span><span>' + S.esc(it.name) + '</span></li>';
+    });
+    html += '</ul>';
+    if (o.note) html += '<p class="k-note">“' + S.esc(o.note) + '”</p>';
+    var next = NEXT[o.status];
+    if (next) {
+      html += '<button type="button" class="k-btn" data-id="' + S.esc(o.id) + '" data-next="' + next.status + '">' + next.label + '</button>';
+    }
+    html += '</article>';
+    return html;
+  }
+
+  function render() {
+    var orders = S.loadOrders().filter(function (o) { return !o.closed && NEXT[o.status]; });
+    orders.sort(function (a, b) { return a.ts - b.ts; });
+    var first = (seenIds === null);
+    var nowSeen = {};
+    ['new', 'preparing', 'ready'].forEach(function (status) {
+      var list = orders.filter(function (o) { return o.status === status; });
+      document.getElementById('count-' + status).textContent = list.length ? '(' + list.length + ')' : '';
+      var col = document.getElementById('col-' + status);
+      if (!list.length) {
+        col.innerHTML = '<p class="empty">No orders</p>';
+        return;
+      }
+      col.innerHTML = list.map(function (o) {
+        var flash = !first && !seenIds[o.id];
+        nowSeen[o.id] = true;
+        return cardHtml(o, flash);
+      }).join('');
+    });
+    orders.forEach(function (o) { nowSeen[o.id] = true; });
+    seenIds = nowSeen;
+    document.querySelectorAll('.k-btn').forEach(function (btn) {
+      btn.addEventListener('click', function () {
+        S.setStatus(btn.getAttribute('data-id'), btn.getAttribute('data-next'));
+        render();
+      });
+    });
+  }
+
+  document.getElementById('resetBtn').addEventListener('click', function () {
+    if (window.confirm('Reset the demo? This clears all orders.')) {
+      S.resetDemo();
+      seenIds = null;
+      render();
+    }
+  });
+
+  window.setInterval(function () {
+    document.querySelectorAll('.k-elapsed').forEach(function (el) {
+      el.textContent = elapsedText(parseInt(el.getAttribute('data-ts'), 10));
+    });
+  }, 20000);
+
+  S.onChange(render);
+  render();
+})();
+</script>
+</body>
+</html>

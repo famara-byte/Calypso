@@ -1,0 +1,567 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Calypso — Cashier POS</title>
+<meta name="description" content="Calypso Bar and Restaurant — cashier point of sale (demonstration system).">
+<meta name="theme-color" content="#0b1f13">
+<link rel="icon" href="icon.webp" type="image/webp">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,500;1,600&family=Jost:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg-dark:#0b1f13;
+    --surface-dark:#12291a;
+    --gold:#c9a35f;
+    --gold-soft:#e3c98f;
+    --sand:#f6f0e2;
+    --card:#fffdf7;
+    --ink:#1c2a20;
+    --muted:#5c6a5e;
+    --line:rgba(18,53,36,.14);
+    --line-dark:rgba(227,201,143,.18);
+    --radius:18px;
+    --ease-out:cubic-bezier(0.23,1,0.32,1);
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{
+    font-family:"Jost",system-ui,sans-serif;
+    background:var(--sand);
+    color:var(--ink);
+    font-size:16px;
+    line-height:1.5;
+    -webkit-font-smoothing:antialiased;
+  }
+  :focus-visible{outline:2px solid var(--gold);outline-offset:3px;border-radius:6px}
+  .wrap{max-width:900px;margin:0 auto;padding:0 18px}
+
+  .p-header{
+    background:var(--bg-dark);
+    color:var(--sand);
+    padding:30px 0 26px;
+  }
+  .p-header .wrap{display:flex;align-items:flex-end;justify-content:space-between;gap:16px;flex-wrap:wrap}
+  .p-header h1{
+    font-family:"Cormorant Garamond",serif;
+    font-weight:600;
+    font-size:38px;
+    line-height:1.05;
+  }
+  .p-header h1 .amp{color:var(--gold-soft);font-style:italic;font-weight:500}
+  .p-sub{margin-top:5px;font-size:13px;letter-spacing:.16em;text-transform:uppercase;color:rgba(246,240,226,.62)}
+  .reset-btn{
+    min-height:44px;
+    padding:10px 20px;
+    border-radius:999px;
+    border:1px solid var(--line-dark);
+    background:transparent;
+    color:var(--gold-soft);
+    font-family:"Jost",system-ui,sans-serif;
+    font-size:14px;
+    font-weight:600;
+    cursor:pointer;
+    transition:transform 160ms var(--ease-out), background-color 200ms ease;
+  }
+  .reset-btn:active{transform:scale(.96)}
+
+  /* Summary strip */
+  .summary{
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:12px;
+    margin-top:22px;
+  }
+  @media (max-width:560px){ .summary{grid-template-columns:1fr} }
+  .stat{
+    background:var(--card);
+    border:1px solid var(--line);
+    border-radius:var(--radius);
+    padding:16px 18px;
+  }
+  .stat .stat-label{font-size:12.5px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+  .stat .stat-value{font-family:"Cormorant Garamond",serif;font-weight:700;font-size:31px;line-height:1.15;margin-top:2px}
+
+  section{padding:32px 0 6px}
+  .sec-head h2{
+    font-family:"Cormorant Garamond",serif;
+    font-weight:600;
+    font-size:29px;
+    line-height:1.15;
+  }
+  .sec-head::after{content:"";display:block;width:38px;height:2px;background:var(--gold);margin-top:9px;border-radius:2px}
+  .empty{margin-top:14px;color:var(--muted);font-size:15.5px;font-style:italic}
+
+  /* Bill cards */
+  .bill{
+    background:var(--card);
+    border:1px solid var(--line);
+    border-radius:var(--radius);
+    padding:18px 20px;
+    margin-top:16px;
+  }
+  .bill-top{display:flex;align-items:baseline;justify-content:space-between;gap:12px;flex-wrap:wrap}
+  .bill-table{font-family:"Cormorant Garamond",serif;font-weight:700;font-size:25px}
+  .bill-total{font-weight:700;font-size:19px}
+  .bill-order{margin-top:12px;padding-top:10px;border-top:1px dashed var(--line)}
+  .bill-order-head{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+  .bill-order-id{font-weight:700}
+  .bill-order-time{color:var(--muted);font-size:13.5px}
+  .pill{
+    display:inline-flex;
+    align-items:center;
+    min-height:24px;
+    padding:2px 10px;
+    border-radius:999px;
+    font-size:12px;
+    font-weight:600;
+    letter-spacing:.06em;
+    text-transform:uppercase;
+  }
+  .pill-status{background:rgba(18,41,26,.09);color:var(--surface-dark)}
+  .pill-unpaid{background:rgba(163,59,46,.12);color:#a33b2e}
+  .pill-paid{background:rgba(46,110,64,.14);color:#2e6e40}
+  .bill-line{display:flex;justify-content:space-between;gap:12px;font-size:15px;padding:2px 0}
+  .bill-line .amt{font-weight:600;white-space:nowrap}
+  .bill-subtotal{display:flex;justify-content:space-between;font-weight:600;font-size:15px;padding-top:4px}
+  .bill-state{margin-top:12px;font-size:14.5px;color:var(--muted)}
+  .bill-state strong{color:var(--ink)}
+  .pay-row{margin-top:14px;border-top:1px solid var(--line);padding-top:14px}
+  .pay-methods{display:flex;gap:8px;flex-wrap:wrap}
+  .pay-method{
+    flex:1;
+    min-width:100px;
+    min-height:48px;
+    padding:10px 8px;
+    border-radius:12px;
+    border:1.5px solid var(--line);
+    background:#fff;
+    color:var(--ink);
+    font-family:"Jost",system-ui,sans-serif;
+    font-size:14.5px;
+    font-weight:600;
+    cursor:pointer;
+    transition:transform 160ms var(--ease-out), background-color 200ms ease;
+  }
+  .pay-method:active{transform:scale(.97)}
+  .pay-method.selected{background:var(--surface-dark);border-color:var(--surface-dark);color:var(--sand)}
+  .settle-btn{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    width:100%;
+    min-height:50px;
+    margin-top:12px;
+    padding:13px 22px;
+    border:none;
+    border-radius:999px;
+    background:var(--gold);
+    color:var(--ink);
+    font-family:"Jost",system-ui,sans-serif;
+    font-size:16px;
+    font-weight:600;
+    cursor:pointer;
+    transition:transform 160ms var(--ease-out), background-color 200ms ease;
+  }
+  .settle-btn:active{transform:scale(.97)}
+  .close-btn{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    width:100%;
+    min-height:48px;
+    margin-top:14px;
+    padding:11px 22px;
+    border:1px solid var(--line);
+    border-radius:999px;
+    background:transparent;
+    color:var(--ink);
+    font-family:"Jost",system-ui,sans-serif;
+    font-size:15.5px;
+    font-weight:600;
+    cursor:pointer;
+    transition:transform 160ms var(--ease-out);
+  }
+  .close-btn:active{transform:scale(.97)}
+
+  /* History & reviews */
+  .hist-row,.review-row{
+    display:flex;
+    justify-content:space-between;
+    align-items:baseline;
+    gap:14px;
+    background:var(--card);
+    border:1px solid var(--line);
+    border-radius:14px;
+    padding:13px 18px;
+    margin-top:10px;
+    font-size:15px;
+  }
+  .hist-row .h-main{font-weight:600}
+  .hist-row .h-meta{color:var(--muted);font-size:13.5px}
+  .hist-row .h-amt{font-weight:700;white-space:nowrap}
+  .review-row{display:block}
+  .review-top{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap}
+  .review-stars{color:var(--gold);font-size:17px;letter-spacing:2px}
+  .review-meta{color:var(--muted);font-size:13.5px}
+  .review-comment{margin-top:3px;font-size:15px}
+  .p-footer{
+    margin-top:40px;
+    padding:22px 0 34px;
+    border-top:1px solid var(--line);
+    color:var(--muted);
+    font-size:13.5px;
+    text-align:center;
+  }
+  @media (prefers-reduced-motion: reduce){
+    .reset-btn,.pay-method,.settle-btn,.close-btn{transition:transform 0ms}
+    .reset-btn:active,.pay-method:active,.settle-btn:active,.close-btn:active{transform:none}
+  }
+</style>
+</head>
+<body>
+
+<header class="p-header">
+  <div class="wrap">
+    <div>
+      <h1>Calypso <span class="amp">—</span> Cashier POS</h1>
+      <p class="p-sub">Demonstration system</p>
+    </div>
+    <button type="button" class="reset-btn" id="resetBtn">Reset demo</button>
+  </div>
+</header>
+
+<main class="wrap">
+  <div class="summary" aria-label="Today at a glance">
+    <div class="stat"><div class="stat-label">Orders today</div><div class="stat-value" id="statOrders">0</div></div>
+    <div class="stat"><div class="stat-label">Value of today's orders</div><div class="stat-value" id="statValue">D0</div></div>
+    <div class="stat"><div class="stat-label">Collected (paid)</div><div class="stat-value" id="statCollected">D0</div></div>
+  </div>
+
+  <section aria-label="Open bills">
+    <div class="sec-head"><h2>Open bills</h2></div>
+    <div id="bills"></div>
+  </section>
+
+  <section aria-label="Settled bills today">
+    <div class="sec-head"><h2>Settled today</h2></div>
+    <div id="history"></div>
+  </section>
+
+  <section aria-label="Latest reviews">
+    <div class="sec-head"><h2>Latest reviews</h2></div>
+    <div id="reviews"></div>
+  </section>
+</main>
+
+<footer class="p-footer">
+  <div class="wrap">Calypso Bar &amp; Restaurant — demonstration POS. No real payments are taken.</div>
+</footer>
+
+<script>
+/* Calypso demo — shared order store (same code in menu.html, kitchen.html, pos.html).
+   State lives in localStorage; open tabs stay in sync via BroadcastChannel + storage events. */
+var CalypsoStore = (function () {
+  var ORDERS_KEY = 'calypso_orders_v1';
+  var COUNTER_KEY = 'calypso_counter_v1';
+  var REVIEWS_KEY = 'calypso_reviews_v1';
+  var bc = null;
+  try {
+    if (typeof BroadcastChannel !== 'undefined') bc = new BroadcastChannel('calypso_orders');
+  } catch (e) { bc = null; }
+
+  function load(key, fallback) {
+    try {
+      var raw = localStorage.getItem(key);
+      return raw ? JSON.parse(raw) : fallback;
+    } catch (e) { return fallback; }
+  }
+  function save(key, value) {
+    try { localStorage.setItem(key, JSON.stringify(value)); } catch (e) {}
+    if (bc) { try { bc.postMessage({ key: key, at: Date.now() }); } catch (e) {} }
+  }
+  function onChange(fn) {
+    if (bc) bc.onmessage = function () { fn(); };
+    window.addEventListener('storage', function (e) {
+      if (e.key === null || e.key === ORDERS_KEY || e.key === REVIEWS_KEY || e.key === COUNTER_KEY) fn();
+    });
+  }
+
+  function loadOrders() {
+    var o = load(ORDERS_KEY, []);
+    return Array.isArray(o) ? o : [];
+  }
+  function saveOrders(orders) { save(ORDERS_KEY, orders); }
+
+  function orderTotal(items) {
+    return items.reduce(function (sum, i) { return sum + i.price * i.qty; }, 0);
+  }
+
+  function dayKey(d) {
+    function p(n) { return (n < 10 ? '0' : '') + n; }
+    return d.getFullYear() + '-' + p(d.getMonth() + 1) + '-' + p(d.getDate());
+  }
+  function nextOrderId() {
+    var day = dayKey(new Date());
+    var c = load(COUNTER_KEY, { day: day, n: 0 });
+    if (!c || c.day !== day || typeof c.n !== 'number') c = { day: day, n: 0 };
+    c.n += 1;
+    save(COUNTER_KEY, c);
+    return 'A' + c.n;
+  }
+
+  function placeOrder(table, items, note) {
+    var orders = loadOrders();
+    var order = {
+      id: nextOrderId(),
+      table: table,
+      items: items,
+      note: note || '',
+      status: 'new',
+      pay: 'unpaid',
+      method: null,
+      ts: Date.now()
+    };
+    orders.push(order);
+    saveOrders(orders);
+    return order;
+  }
+
+  function setStatus(id, status) {
+    var orders = loadOrders();
+    orders.forEach(function (o) { if (o.id === id) o.status = status; });
+    saveOrders(orders);
+  }
+
+  function payOrders(ids, method) {
+    var now = Date.now();
+    var orders = loadOrders();
+    orders.forEach(function (o) {
+      if (ids.indexOf(o.id) !== -1 && o.pay !== 'paid') {
+        o.pay = 'paid';
+        o.method = method;
+        o.paidTs = now;
+      }
+    });
+    saveOrders(orders);
+  }
+
+  function closeOrders(ids) {
+    var orders = loadOrders();
+    orders.forEach(function (o) { if (ids.indexOf(o.id) !== -1) o.closed = true; });
+    saveOrders(orders);
+  }
+
+  function loadReviews() {
+    var r = load(REVIEWS_KEY, []);
+    return Array.isArray(r) ? r : [];
+  }
+  function saveReview(review) {
+    var r = loadReviews();
+    r.push(review);
+    save(REVIEWS_KEY, r);
+  }
+
+  function resetDemo() {
+    try {
+      localStorage.removeItem(ORDERS_KEY);
+      localStorage.removeItem(COUNTER_KEY);
+    } catch (e) {}
+    if (bc) { try { bc.postMessage({ key: ORDERS_KEY, at: Date.now() }); } catch (e) {} }
+  }
+
+  function fmt(n) { return 'D' + Number(n).toLocaleString('en-US'); }
+  function isToday(ts) {
+    var d = new Date();
+    d.setHours(0, 0, 0, 0);
+    return ts >= d.getTime();
+  }
+  function timeStr(ts) {
+    return new Date(ts).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+  }
+  function esc(s) {
+    return String(s == null ? '' : s).replace(/[&<>"']/g, function (ch) {
+      return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[ch];
+    });
+  }
+
+  return {
+    ORDERS_KEY: ORDERS_KEY,
+    COUNTER_KEY: COUNTER_KEY,
+    REVIEWS_KEY: REVIEWS_KEY,
+    onChange: onChange,
+    loadOrders: loadOrders,
+    orderTotal: orderTotal,
+    placeOrder: placeOrder,
+    setStatus: setStatus,
+    payOrders: payOrders,
+    closeOrders: closeOrders,
+    loadReviews: loadReviews,
+    saveReview: saveReview,
+    resetDemo: resetDemo,
+    fmt: fmt,
+    isToday: isToday,
+    timeStr: timeStr,
+    esc: esc
+  };
+})();
+
+</script>
+<script>
+(function () {
+  var S = window.CalypsoStore;
+  if (!S) return;
+
+  var METHODS = ['Cash', 'Mobile money', 'Card'];
+  var STATUS_LABELS = { 'new': 'Received', 'preparing': 'Preparing', 'ready': 'Ready', 'served': 'Served' };
+  var methodByTable = {};
+
+  function starsStr(n) {
+    var s = '';
+    for (var i = 1; i <= 5; i++) s += (i <= n ? '★' : '☆');
+    return s;
+  }
+
+  function billHtml(table, orders) {
+    var grand = 0, paidSum = 0;
+    orders.forEach(function (o) {
+      var t = S.orderTotal(o.items);
+      grand += t;
+      if (o.pay === 'paid') paidSum += t;
+    });
+    var unpaid = grand - paidSum;
+    var html = '<article class="bill" data-table="' + table + '">';
+    html += '<div class="bill-top"><span class="bill-table">Table ' + table + '</span><span class="bill-total">' + S.fmt(grand) + '</span></div>';
+    orders.forEach(function (o) {
+      html += '<div class="bill-order"><div class="bill-order-head"><span class="bill-order-id">' + S.esc(o.id) + '</span>' +
+        '<span class="pill pill-status">' + STATUS_LABELS[o.status] + '</span>' +
+        (o.pay === 'paid'
+          ? '<span class="pill pill-paid">Paid · ' + S.esc(o.method || '') + '</span>'
+          : '<span class="pill pill-unpaid">Unpaid</span>') +
+        '<span class="bill-order-time">' + S.timeStr(o.ts) + '</span></div>';
+      o.items.forEach(function (it) {
+        html += '<div class="bill-line"><span>' + it.qty + ' × ' + S.esc(it.name) + '</span><span class="amt">' + S.fmt(it.price * it.qty) + '</span></div>';
+      });
+      html += '<div class="bill-subtotal"><span>Order total</span><span>' + S.fmt(S.orderTotal(o.items)) + '</span></div></div>';
+    });
+    if (unpaid > 0) {
+      var method = methodByTable[table] || 'Cash';
+      html += '<p class="bill-state">' + (paidSum > 0 ? '<strong>' + S.fmt(paidSum) + '</strong> paid · ' : '') +
+        '<strong>' + S.fmt(unpaid) + '</strong> to collect</p>';
+      html += '<div class="pay-row"><div class="pay-methods" role="group" aria-label="Payment method for table ' + table + '">';
+      METHODS.forEach(function (m) {
+        html += '<button type="button" class="pay-method' + (m === method ? ' selected' : '') + '" data-table="' + table + '" data-method="' + m + '">' + m + '</button>';
+      });
+      html += '</div><button type="button" class="settle-btn" data-settle="' + table + '">Take payment &amp; close bill · ' + S.fmt(unpaid) + '</button></div>';
+    } else {
+      html += '<p class="bill-state"><strong>Paid in full</strong>' + (orders[0] && orders[0].method ? ' · ' + S.esc(orders.map(function (o) { return o.method; }).filter(function (v, i, a) { return v && a.indexOf(v) === i; }).join(', ')) : '') + '</p>';
+      html += '<button type="button" class="close-btn" data-close-bill="' + table + '">Close bill</button>';
+    }
+    html += '</article>';
+    return html;
+  }
+
+  function render() {
+    var orders = S.loadOrders();
+
+    /* Today summary */
+    var today = orders.filter(function (o) { return S.isToday(o.ts); });
+    var value = 0, collected = 0;
+    today.forEach(function (o) {
+      var t = S.orderTotal(o.items);
+      value += t;
+      if (o.pay === 'paid') collected += t;
+    });
+    document.getElementById('statOrders').textContent = String(today.length);
+    document.getElementById('statValue').textContent = S.fmt(value);
+    document.getElementById('statCollected').textContent = S.fmt(collected);
+
+    /* Open bills by table */
+    var open = orders.filter(function (o) { return !o.closed; });
+    var tables = [];
+    open.forEach(function (o) { if (tables.indexOf(o.table) === -1) tables.push(o.table); });
+    tables.sort(function (a, b) { return a - b; });
+    var billsEl = document.getElementById('bills');
+    if (!tables.length) {
+      billsEl.innerHTML = '<p class="empty">No open bills.</p>';
+    } else {
+      billsEl.innerHTML = tables.map(function (t) {
+        return billHtml(t, open.filter(function (o) { return o.table === t; }));
+      }).join('');
+    }
+    billsEl.querySelectorAll('.pay-method').forEach(function (btn) {
+      btn.addEventListener('click', function () {
+        methodByTable[btn.getAttribute('data-table')] = btn.getAttribute('data-method');
+        render();
+      });
+    });
+    billsEl.querySelectorAll('[data-settle]').forEach(function (btn) {
+      btn.addEventListener('click', function () { settleBill(parseInt(btn.getAttribute('data-settle'), 10)); });
+    });
+    billsEl.querySelectorAll('[data-close-bill]').forEach(function (btn) {
+      btn.addEventListener('click', function () {
+        var t = parseInt(btn.getAttribute('data-close-bill'), 10);
+        var ids = S.loadOrders().filter(function (o) { return o.table === t && !o.closed; }).map(function (o) { return o.id; });
+        S.closeOrders(ids);
+        render();
+      });
+    });
+
+    /* History: today's settled (paid) bills, grouped by table + payment moment */
+    var paidToday = orders.filter(function (o) { return o.pay === 'paid' && o.paidTs && S.isToday(o.paidTs); });
+    var groups = {};
+    paidToday.forEach(function (o) {
+      var key = o.table + '|' + o.paidTs;
+      if (!groups[key]) groups[key] = { table: o.table, total: 0, method: o.method, paidTs: o.paidTs };
+      groups[key].total += S.orderTotal(o.items);
+    });
+    var hist = Object.keys(groups).map(function (k) { return groups[k]; }).sort(function (a, b) { return b.paidTs - a.paidTs; });
+    var histEl = document.getElementById('history');
+    if (!hist.length) {
+      histEl.innerHTML = '<p class="empty">No bills settled yet today.</p>';
+    } else {
+      histEl.innerHTML = hist.map(function (h) {
+        return '<div class="hist-row"><span><span class="h-main">Table ' + h.table + '</span> ' +
+          '<span class="h-meta">· ' + S.esc(h.method || '') + ' · ' + S.timeStr(h.paidTs) + '</span></span>' +
+          '<span class="h-amt">' + S.fmt(h.total) + '</span></div>';
+      }).join('');
+    }
+
+    /* Latest reviews (read-only) */
+    var reviews = S.loadReviews().slice().sort(function (a, b) { return b.ts - a.ts; }).slice(0, 8);
+    var revEl = document.getElementById('reviews');
+    if (!reviews.length) {
+      revEl.innerHTML = '<p class="empty">No reviews yet.</p>';
+    } else {
+      revEl.innerHTML = reviews.map(function (r) {
+        return '<div class="review-row"><div class="review-top"><span class="review-stars" aria-label="' + r.stars + ' out of 5 stars">' + starsStr(r.stars) + '</span>' +
+          '<span class="review-meta">Table ' + r.table + ' · ' + S.timeStr(r.ts) + '</span></div>' +
+          (r.comment ? '<p class="review-comment">“' + S.esc(r.comment) + '”</p>' : '') +
+          '</div>';
+      }).join('');
+    }
+  }
+
+  function settleBill(table) {
+    var billOrders = S.loadOrders().filter(function (o) { return o.table === table && !o.closed; });
+    var unpaidIds = billOrders.filter(function (o) { return o.pay !== 'paid'; }).map(function (o) { return o.id; });
+    if (unpaidIds.length) S.payOrders(unpaidIds, methodByTable[table] || 'Cash');
+    S.closeOrders(billOrders.map(function (o) { return o.id; }));
+    render();
+  }
+
+  document.getElementById('resetBtn').addEventListener('click', function () {
+    if (window.confirm('Reset the demo? This clears all orders.')) {
+      S.resetDemo();
+      methodByTable = {};
+      render();
+    }
+  });
+
+  S.onChange(render);
+  render();
+})();
+</script>
+</body>
+</html>

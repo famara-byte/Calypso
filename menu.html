@@ -318,6 +318,432 @@
     .photo-btn img{transition:none}
     .photo-btn:active,.call-btn:active,.chip:active,.footer-links a:active,.viewer-close:active{transform:none}
   }
+
+  /* ---------- Ordering (demo) ---------- */
+  .table-wrap{margin-top:22px}
+  .table-chip{
+    display:inline-flex;
+    align-items:center;
+    gap:8px;
+    min-height:44px;
+    padding:10px 22px;
+    border-radius:999px;
+    border:1px solid var(--gold);
+    background:transparent;
+    color:var(--gold-soft);
+    font-family:"Jost",system-ui,sans-serif;
+    font-size:15px;
+    font-weight:600;
+    letter-spacing:.08em;
+    text-transform:uppercase;
+    cursor:pointer;
+    transition:transform 160ms var(--ease-out), background-color 200ms ease;
+  }
+  .table-chip:active{transform:scale(.97)}
+  .table-picker{
+    max-width:430px;
+    margin:16px auto 0;
+    background:var(--surface-dark);
+    border:1px solid var(--line-dark);
+    border-radius:var(--radius);
+    padding:16px 16px 12px;
+  }
+  .table-picker[hidden]{display:none}
+  .table-picker p{
+    font-size:14px;
+    letter-spacing:.12em;
+    text-transform:uppercase;
+    color:var(--gold-soft);
+    margin-bottom:12px;
+  }
+  .table-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+  .table-grid button{
+    min-height:44px;
+    border-radius:12px;
+    border:1px solid var(--line-dark);
+    background:transparent;
+    color:var(--sand);
+    font-family:"Jost",system-ui,sans-serif;
+    font-size:16px;
+    font-weight:600;
+    cursor:pointer;
+    transition:transform 160ms var(--ease-out), background-color 200ms ease;
+  }
+  .table-grid button:active{transform:scale(.95)}
+  .table-grid button.selected{background:var(--gold);border-color:var(--gold);color:var(--ink)}
+
+  .item-actions{margin-top:10px;display:flex;justify-content:flex-end}
+  .add-btn{
+    min-height:44px;
+    min-width:96px;
+    padding:10px 22px;
+    border-radius:999px;
+    border:1.5px solid var(--gold);
+    background:transparent;
+    color:var(--surface-dark);
+    font-family:"Jost",system-ui,sans-serif;
+    font-size:15px;
+    font-weight:600;
+    cursor:pointer;
+    transition:transform 160ms var(--ease-out), background-color 200ms ease;
+  }
+  .signatures .add-btn{color:var(--gold-soft)}
+  .add-btn:active{transform:scale(.96)}
+  @media (hover:hover) and (pointer:fine){
+    .add-btn:hover{background:rgba(201,163,95,.16)}
+    .table-grid button:hover{background:rgba(227,201,143,.14)}
+  }
+  .stepper{display:inline-flex;align-items:center;gap:4px}
+  .step-btn{
+    width:44px;
+    height:44px;
+    border-radius:50%;
+    border:1.5px solid var(--gold);
+    background:transparent;
+    color:inherit;
+    font-size:21px;
+    line-height:1;
+    cursor:pointer;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    transition:transform 160ms var(--ease-out), background-color 200ms ease;
+  }
+  .step-btn:active{transform:scale(.92)}
+  .step-qty{min-width:30px;text-align:center;font-weight:600;font-size:16.5px}
+
+  /* ---------- Cart bar ---------- */
+  .cart-bar{
+    position:fixed;
+    left:12px;
+    right:12px;
+    bottom:12px;
+    z-index:40;
+    max-width:560px;
+    margin:0 auto;
+    background:var(--bg-dark);
+    color:var(--sand);
+    border:1px solid var(--line-dark);
+    border-radius:999px;
+    box-shadow:0 14px 38px rgba(11,31,19,.4);
+    display:none;
+    align-items:center;
+    justify-content:space-between;
+    gap:12px;
+    padding:8px 8px 8px 22px;
+  }
+  .cart-bar.show{display:flex}
+  body.has-cartbar{padding-bottom:92px}
+  .cart-bar .cart-summary{font-weight:600;font-size:15.5px;white-space:nowrap}
+  .cart-bar .cart-view{
+    min-height:44px;
+    padding:10px 22px;
+    border:none;
+    border-radius:999px;
+    background:var(--gold);
+    color:var(--ink);
+    font-family:"Jost",system-ui,sans-serif;
+    font-size:15px;
+    font-weight:600;
+    cursor:pointer;
+    transition:transform 160ms var(--ease-out);
+  }
+  .cart-bar .cart-view:active{transform:scale(.96)}
+
+  /* ---------- Sheets (cart / payment) ---------- */
+  dialog.sheet{
+    border:none;
+    padding:0;
+    background:transparent;
+    width:min(94vw,520px);
+    max-width:520px;
+    opacity:0;
+    transform:translateY(14px);
+    transition:opacity 250ms var(--ease-out), transform 250ms var(--ease-out);
+  }
+  dialog.sheet[open]{opacity:1;transform:translateY(0)}
+  @starting-style{
+    dialog.sheet[open]{opacity:0;transform:translateY(14px)}
+    dialog.sheet[open]::backdrop{opacity:0}
+  }
+  dialog.sheet::backdrop{
+    background:rgba(11,31,19,.62);
+    opacity:1;
+    transition:opacity 250ms var(--ease-out);
+  }
+  .sheet-card{
+    background:var(--card);
+    border-radius:var(--radius);
+    overflow:hidden;
+    box-shadow:0 24px 60px rgba(11,31,19,.45);
+    display:flex;
+    flex-direction:column;
+    max-height:86vh;
+  }
+  .sheet-head{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:12px;
+    padding:18px 20px 6px;
+  }
+  .sheet-head h2{
+    font-family:"Cormorant Garamond",serif;
+    font-weight:600;
+    font-size:26px;
+    line-height:1.15;
+  }
+  .sheet-close{
+    width:44px;
+    height:44px;
+    flex:none;
+    border-radius:50%;
+    border:1px solid var(--line);
+    background:transparent;
+    color:var(--ink);
+    font-size:22px;
+    line-height:1;
+    cursor:pointer;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    transition:transform 160ms var(--ease-out);
+  }
+  .sheet-close:active{transform:scale(.94)}
+  .sheet-body{padding:10px 20px 18px;overflow-y:auto}
+  .sheet-foot{
+    padding:14px 20px 20px;
+    border-top:1px solid var(--line);
+  }
+  .cart-line{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    padding:12px 0;
+    border-bottom:1px solid var(--line);
+  }
+  .cart-line:last-child{border-bottom:none}
+  .cart-line-info{flex:1;min-width:0}
+  .cart-line-name{font-weight:600;font-size:15.5px;line-height:1.3}
+  .cart-line-unit{font-size:13.5px;color:var(--muted)}
+  .cart-line-total{font-weight:600;white-space:nowrap;min-width:64px;text-align:right}
+  .remove-btn{
+    width:44px;
+    height:44px;
+    flex:none;
+    border:none;
+    background:transparent;
+    color:var(--muted);
+    font-size:21px;
+    cursor:pointer;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+  }
+  .note-label{display:block;margin-top:16px;font-size:13px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
+  .note-input,.comment-input{
+    width:100%;
+    margin-top:8px;
+    padding:12px 14px;
+    border:1px solid var(--line);
+    border-radius:12px;
+    background:#fff;
+    font-family:"Jost",system-ui,sans-serif;
+    font-size:15.5px;
+    color:var(--ink);
+    resize:vertical;
+  }
+  .sheet-total{
+    display:flex;
+    justify-content:space-between;
+    align-items:baseline;
+    font-weight:600;
+    font-size:18px;
+    margin-bottom:14px;
+  }
+  .primary-btn{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    width:100%;
+    min-height:50px;
+    padding:13px 22px;
+    border:none;
+    border-radius:999px;
+    background:var(--gold);
+    color:var(--ink);
+    font-family:"Jost",system-ui,sans-serif;
+    font-size:16.5px;
+    font-weight:600;
+    cursor:pointer;
+    transition:transform 160ms var(--ease-out), background-color 200ms ease;
+  }
+  .primary-btn:active{transform:scale(.97)}
+  .primary-btn[disabled]{opacity:.45;cursor:default}
+  .ghost-btn{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    width:100%;
+    min-height:48px;
+    margin-top:10px;
+    padding:11px 22px;
+    border:1px solid var(--line);
+    border-radius:999px;
+    background:transparent;
+    color:var(--ink);
+    font-family:"Jost",system-ui,sans-serif;
+    font-size:15.5px;
+    font-weight:500;
+    cursor:pointer;
+    transition:transform 160ms var(--ease-out);
+  }
+  .ghost-btn:active{transform:scale(.97)}
+  .empty-note{padding:14px 0 6px;color:var(--muted);font-size:15.5px}
+  .confirm-msg{text-align:center;padding:12px 0 4px}
+  .confirm-msg .big{
+    font-family:"Cormorant Garamond",serif;
+    font-weight:600;
+    font-size:27px;
+    line-height:1.2;
+  }
+  .confirm-msg p{margin-top:8px;color:var(--muted);font-size:15.5px}
+  .demo-print{margin-top:12px;font-size:13px;color:var(--muted);text-align:center}
+
+  /* ---------- Payment methods & review ---------- */
+  .pay-methods{display:flex;gap:8px;margin:6px 0 4px}
+  .pay-method{
+    flex:1;
+    min-height:48px;
+    padding:10px 6px;
+    border-radius:12px;
+    border:1.5px solid var(--line);
+    background:#fff;
+    color:var(--ink);
+    font-family:"Jost",system-ui,sans-serif;
+    font-size:14.5px;
+    font-weight:600;
+    cursor:pointer;
+    transition:transform 160ms var(--ease-out), background-color 200ms ease, border-color 200ms ease;
+  }
+  .pay-method:active{transform:scale(.97)}
+  .pay-method.selected{background:var(--surface-dark);border-color:var(--surface-dark);color:var(--sand)}
+  .review-block{margin-top:20px;border-top:1px solid var(--line);padding-top:18px;text-align:center}
+  .review-block h3{
+    font-family:"Cormorant Garamond",serif;
+    font-weight:600;
+    font-size:24px;
+  }
+  .stars{display:flex;justify-content:center;gap:4px;margin:12px 0 4px}
+  .star-btn{
+    width:44px;
+    height:44px;
+    border:none;
+    background:transparent;
+    font-size:30px;
+    line-height:1;
+    color:rgba(18,53,36,.22);
+    cursor:pointer;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    transition:transform 160ms var(--ease-out), color 200ms ease;
+  }
+  .star-btn:active{transform:scale(.9)}
+  .star-btn.on{color:var(--gold)}
+  .review-hint{min-height:20px;font-size:13.5px;color:#a33b2e}
+  .review-thanks{
+    margin-top:20px;
+    border-top:1px solid var(--line);
+    padding-top:18px;
+    text-align:center;
+    font-family:"Cormorant Garamond",serif;
+    font-style:italic;
+    font-size:19px;
+    color:var(--surface-dark);
+  }
+
+  /* ---------- Your orders & bill ---------- */
+  .table-area{padding:38px 0 14px}
+  .table-area[hidden]{display:none}
+  .order-card{
+    background:var(--card);
+    border:1px solid var(--line);
+    border-radius:var(--radius);
+    padding:16px 18px;
+    margin-top:14px;
+  }
+  .order-top{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+  .order-id{font-family:"Cormorant Garamond",serif;font-weight:700;font-size:20px}
+  .order-time{color:var(--muted);font-size:13.5px;margin-left:auto}
+  .pill{
+    display:inline-flex;
+    align-items:center;
+    min-height:26px;
+    padding:3px 11px;
+    border-radius:999px;
+    font-size:12.5px;
+    font-weight:600;
+    letter-spacing:.06em;
+    text-transform:uppercase;
+  }
+  .pill-status{background:rgba(18,41,26,.09);color:var(--surface-dark)}
+  .pill-status.ready{background:var(--gold);color:var(--ink)}
+  .pill-unpaid{background:rgba(163,59,46,.12);color:#a33b2e}
+  .pill-paid{background:rgba(46,110,64,.14);color:#2e6e40}
+  .order-lines{margin-top:10px}
+  .order-line{
+    display:flex;
+    justify-content:space-between;
+    gap:12px;
+    font-size:15px;
+    padding:3px 0;
+  }
+  .order-line .amt{font-weight:600;white-space:nowrap}
+  .order-note{margin-top:8px;font-size:14px;font-style:italic;color:var(--muted)}
+  .bill-card{
+    background:var(--surface-dark);
+    color:var(--sand);
+    border-radius:var(--radius);
+    padding:20px;
+    margin-top:22px;
+  }
+  .bill-card h3{
+    font-family:"Cormorant Garamond",serif;
+    font-weight:600;
+    font-size:24px;
+    margin-bottom:10px;
+  }
+  .bill-card .order-line{color:var(--sand)}
+  .bill-card .order-note{color:rgba(246,240,226,.65)}
+  .bill-grand{
+    display:flex;
+    justify-content:space-between;
+    border-top:1px solid var(--line-dark);
+    margin-top:12px;
+    padding-top:12px;
+    font-weight:600;
+    font-size:18px;
+  }
+  .bill-state{margin-top:10px;font-size:15px;color:var(--gold-soft)}
+  .bill-card .primary-btn{margin-top:16px}
+  .just-placed{
+    background:rgba(201,163,95,.18);
+    border:1px solid var(--gold);
+    border-radius:12px;
+    padding:12px 16px;
+    margin-top:14px;
+    font-size:15.5px;
+  }
+
+  @media (prefers-reduced-motion: reduce){
+    dialog.sheet{transform:none;transition:opacity 200ms ease}
+    dialog.sheet[open]{transform:none}
+    @starting-style{ dialog.sheet[open]{transform:none} }
+    .table-chip,.table-grid button,.add-btn,.step-btn,.cart-bar .cart-view,.sheet-close,.primary-btn,.ghost-btn,.pay-method,.star-btn{transition:transform 0ms}
+    .table-chip:active,.table-grid button:active,.add-btn:active,.step-btn:active,.cart-bar .cart-view:active,.sheet-close:active,.primary-btn:active,.ghost-btn:active,.pay-method:active,.star-btn:active{transform:none}
+  }
+
 </style>
 </head>
 <body>
@@ -885,6 +1311,840 @@
     });
   }
 })();
+</script>
+<script>
+/* Calypso demo — shared order store (same code in menu.html, kitchen.html, pos.html).
+   State lives in localStorage; open tabs stay in sync via BroadcastChannel + storage events. */
+var CalypsoStore = (function () {
+  var ORDERS_KEY = 'calypso_orders_v1';
+  var COUNTER_KEY = 'calypso_counter_v1';
+  var REVIEWS_KEY = 'calypso_reviews_v1';
+  var bc = null;
+  try {
+    if (typeof BroadcastChannel !== 'undefined') bc = new BroadcastChannel('calypso_orders');
+  } catch (e) { bc = null; }
+
+  function load(key, fallback) {
+    try {
+      var raw = localStorage.getItem(key);
+      return raw ? JSON.parse(raw) : fallback;
+    } catch (e) { return fallback; }
+  }
+  function save(key, value) {
+    try { localStorage.setItem(key, JSON.stringify(value)); } catch (e) {}
+    if (bc) { try { bc.postMessage({ key: key, at: Date.now() }); } catch (e) {} }
+  }
+  function onChange(fn) {
+    if (bc) bc.onmessage = function () { fn(); };
+    window.addEventListener('storage', function (e) {
+      if (e.key === null || e.key === ORDERS_KEY || e.key === REVIEWS_KEY || e.key === COUNTER_KEY) fn();
+    });
+  }
+
+  function loadOrders() {
+    var o = load(ORDERS_KEY, []);
+    return Array.isArray(o) ? o : [];
+  }
+  function saveOrders(orders) { save(ORDERS_KEY, orders); }
+
+  function orderTotal(items) {
+    return items.reduce(function (sum, i) { return sum + i.price * i.qty; }, 0);
+  }
+
+  function dayKey(d) {
+    function p(n) { return (n < 10 ? '0' : '') + n; }
+    return d.getFullYear() + '-' + p(d.getMonth() + 1) + '-' + p(d.getDate());
+  }
+  function nextOrderId() {
+    var day = dayKey(new Date());
+    var c = load(COUNTER_KEY, { day: day, n: 0 });
+    if (!c || c.day !== day || typeof c.n !== 'number') c = { day: day, n: 0 };
+    c.n += 1;
+    save(COUNTER_KEY, c);
+    return 'A' + c.n;
+  }
+
+  function placeOrder(table, items, note) {
+    var orders = loadOrders();
+    var order = {
+      id: nextOrderId(),
+      table: table,
+      items: items,
+      note: note || '',
+      status: 'new',
+      pay: 'unpaid',
+      method: null,
+      ts: Date.now()
+    };
+    orders.push(order);
+    saveOrders(orders);
+    return order;
+  }
+
+  function setStatus(id, status) {
+    var orders = loadOrders();
+    orders.forEach(function (o) { if (o.id === id) o.status = status; });
+    saveOrders(orders);
+  }
+
+  function payOrders(ids, method) {
+    var now = Date.now();
+    var orders = loadOrders();
+    orders.forEach(function (o) {
+      if (ids.indexOf(o.id) !== -1 && o.pay !== 'paid') {
+        o.pay = 'paid';
+        o.method = method;
+        o.paidTs = now;
+      }
+    });
+    saveOrders(orders);
+  }
+
+  function closeOrders(ids) {
+    var orders = loadOrders();
+    orders.forEach(function (o) { if (ids.indexOf(o.id) !== -1) o.closed = true; });
+    saveOrders(orders);
+  }
+
+  function loadReviews() {
+    var r = load(REVIEWS_KEY, []);
+    return Array.isArray(r) ? r : [];
+  }
+  function saveReview(review) {
+    var r = loadReviews();
+    r.push(review);
+    save(REVIEWS_KEY, r);
+  }
+
+  function resetDemo() {
+    try {
+      localStorage.removeItem(ORDERS_KEY);
+      localStorage.removeItem(COUNTER_KEY);
+    } catch (e) {}
+    if (bc) { try { bc.postMessage({ key: ORDERS_KEY, at: Date.now() }); } catch (e) {} }
+  }
+
+  function fmt(n) { return 'D' + Number(n).toLocaleString('en-US'); }
+  function isToday(ts) {
+    var d = new Date();
+    d.setHours(0, 0, 0, 0);
+    return ts >= d.getTime();
+  }
+  function timeStr(ts) {
+    return new Date(ts).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+  }
+  function esc(s) {
+    return String(s == null ? '' : s).replace(/[&<>"']/g, function (ch) {
+      return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[ch];
+    });
+  }
+
+  return {
+    ORDERS_KEY: ORDERS_KEY,
+    COUNTER_KEY: COUNTER_KEY,
+    REVIEWS_KEY: REVIEWS_KEY,
+    onChange: onChange,
+    loadOrders: loadOrders,
+    orderTotal: orderTotal,
+    placeOrder: placeOrder,
+    setStatus: setStatus,
+    payOrders: payOrders,
+    closeOrders: closeOrders,
+    loadReviews: loadReviews,
+    saveReview: saveReview,
+    resetDemo: resetDemo,
+    fmt: fmt,
+    isToday: isToday,
+    timeStr: timeStr,
+    esc: esc
+  };
+})();
+
+</script>
+<script>
+/* Calypso demo — customer ordering on the digital menu.
+   All ordering controls are added by this script; without JavaScript the menu stays a plain menu. */
+(function () {
+  var S = window.CalypsoStore;
+  if (!S) return;
+
+  var MENU_ITEMS = [
+ {
+  "name": "King prawns in filo pastry",
+  "price": 450,
+  "from": false,
+  "sig": true,
+  "cat": "Starters & Light Bites"
+ },
+ {
+  "name": "Chinese spring rolls",
+  "price": 300,
+  "from": false,
+  "sig": false,
+  "cat": "Starters & Light Bites"
+ },
+ {
+  "name": "Indian chicken satay",
+  "price": 350,
+  "from": false,
+  "sig": false,
+  "cat": "Starters & Light Bites"
+ },
+ {
+  "name": "Garlic bread",
+  "price": 150,
+  "from": false,
+  "sig": false,
+  "cat": "Starters & Light Bites"
+ },
+ {
+  "name": "A pint of prawns",
+  "price": 600,
+  "from": false,
+  "sig": false,
+  "cat": "Starters & Light Bites"
+ },
+ {
+  "name": "Tapas selection",
+  "price": 250,
+  "from": true,
+  "sig": false,
+  "cat": "Starters & Light Bites"
+ },
+ {
+  "name": "Fried garlic prawns",
+  "price": 700,
+  "from": false,
+  "sig": true,
+  "cat": "Seafood & Grill"
+ },
+ {
+  "name": "Barbecued prawn skewers",
+  "price": 850,
+  "from": false,
+  "sig": true,
+  "cat": "Seafood & Grill"
+ },
+ {
+  "name": "Seafood platter (for two)",
+  "price": 1800,
+  "from": false,
+  "sig": true,
+  "cat": "Seafood & Grill"
+ },
+ {
+  "name": "Charcoal-grilled barracuda",
+  "price": 750,
+  "from": false,
+  "sig": true,
+  "cat": "Seafood & Grill"
+ },
+ {
+  "name": "Grilled barracuda and butterfish",
+  "price": 700,
+  "from": false,
+  "sig": false,
+  "cat": "Seafood & Grill"
+ },
+ {
+  "name": "Beer-battered fish goujons",
+  "price": 550,
+  "from": false,
+  "sig": false,
+  "cat": "Seafood & Grill"
+ },
+ {
+  "name": "Scampi and chips",
+  "price": 800,
+  "from": false,
+  "sig": false,
+  "cat": "Seafood & Grill"
+ },
+ {
+  "name": "Peppered steak",
+  "price": 950,
+  "from": false,
+  "sig": true,
+  "cat": "Meat & Mains"
+ },
+ {
+  "name": "Steaks from the grill",
+  "price": 900,
+  "from": false,
+  "sig": false,
+  "cat": "Meat & Mains"
+ },
+ {
+  "name": "Chicken Yassa",
+  "price": 550,
+  "from": false,
+  "sig": false,
+  "cat": "Meat & Mains"
+ },
+ {
+  "name": "The Calypso Burger",
+  "price": 600,
+  "from": false,
+  "sig": true,
+  "cat": "Burgers, Sandwiches & Salads"
+ },
+ {
+  "name": "Homemade beef burgers",
+  "price": 550,
+  "from": false,
+  "sig": false,
+  "cat": "Burgers, Sandwiches & Salads"
+ },
+ {
+  "name": "Sandwiches and paninis",
+  "price": 300,
+  "from": true,
+  "sig": false,
+  "cat": "Burgers, Sandwiches & Salads"
+ },
+ {
+  "name": "Fresh salads",
+  "price": 300,
+  "from": true,
+  "sig": false,
+  "cat": "Burgers, Sandwiches & Salads"
+ },
+ {
+  "name": "Crêpes",
+  "price": 350,
+  "from": false,
+  "sig": true,
+  "cat": "Breakfast & Sweet"
+ },
+ {
+  "name": "Desserts of the day",
+  "price": 250,
+  "from": true,
+  "sig": false,
+  "cat": "Breakfast & Sweet"
+ },
+ {
+  "name": "Frozen strawberry daiquiri",
+  "price": 350,
+  "from": false,
+  "sig": false,
+  "cat": "Drinks & Cocktails"
+ },
+ {
+  "name": "Signature cocktails",
+  "price": 300,
+  "from": true,
+  "sig": false,
+  "cat": "Drinks & Cocktails"
+ },
+ {
+  "name": "Local beer",
+  "price": 150,
+  "from": false,
+  "sig": false,
+  "cat": "Drinks & Cocktails"
+ },
+ {
+  "name": "Imported beer",
+  "price": 200,
+  "from": false,
+  "sig": false,
+  "cat": "Drinks & Cocktails"
+ },
+ {
+  "name": "Wine by the glass",
+  "price": 300,
+  "from": false,
+  "sig": false,
+  "cat": "Drinks & Cocktails"
+ },
+ {
+  "name": "Fresh tropical juices",
+  "price": 150,
+  "from": false,
+  "sig": false,
+  "cat": "Drinks & Cocktails"
+ },
+ {
+  "name": "Soft drinks",
+  "price": 80,
+  "from": false,
+  "sig": false,
+  "cat": "Drinks & Cocktails"
+ },
+ {
+  "name": "Coffee & tea",
+  "price": 100,
+  "from": false,
+  "sig": false,
+  "cat": "Drinks & Cocktails"
+ }
+];
+  var byName = {};
+  MENU_ITEMS.forEach(function (it) { byName[it.name] = it; });
+  function fmtPrice(it) { return (it.from ? 'from ' : '') + S.fmt(it.price); }
+
+  var TABLE_KEY = 'calypso_table_v1';
+  var PROMPTED_KEY = 'calypso_review_prompted_v1';
+  var STATUS_LABELS = { 'new': 'Received', 'preparing': 'Preparing', 'ready': 'Ready', 'served': 'Served' };
+
+  /* ---------------- Table ---------------- */
+  var table = null;
+  try {
+    var qt = parseInt(new URLSearchParams(window.location.search).get('t'), 10);
+    if (qt && qt > 0) {
+      table = qt;
+      sessionStorage.setItem(TABLE_KEY, String(qt));
+    }
+  } catch (e) {}
+  if (!table) {
+    try {
+      var stored = parseInt(sessionStorage.getItem(TABLE_KEY), 10);
+      if (stored && stored > 0) table = stored;
+    } catch (e) {}
+  }
+
+  var header = document.querySelector('.site-header');
+  var tableWrap = document.createElement('div');
+  tableWrap.className = 'table-wrap';
+  var chipBtn = document.createElement('button');
+  chipBtn.type = 'button';
+  chipBtn.className = 'table-chip';
+  var picker = document.createElement('div');
+  picker.className = 'table-picker';
+  picker.innerHTML = '<p>Which table are you at?</p>';
+  var grid = document.createElement('div');
+  grid.className = 'table-grid';
+  for (var n = 1; n <= 12; n++) {
+    (function (num) {
+      var b = document.createElement('button');
+      b.type = 'button';
+      b.textContent = String(num);
+      b.setAttribute('aria-label', 'Table ' + num);
+      b.addEventListener('click', function () { setTable(num); picker.hidden = true; });
+      grid.appendChild(b);
+    })(n);
+  }
+  picker.appendChild(grid);
+  tableWrap.appendChild(chipBtn);
+  tableWrap.appendChild(picker);
+  header.appendChild(tableWrap);
+
+  function renderTableChip() {
+    chipBtn.textContent = table ? ('Table ' + table) : 'Choose your table';
+    grid.querySelectorAll('button').forEach(function (b, i) {
+      b.classList.toggle('selected', table === i + 1);
+    });
+  }
+  function setTable(num) {
+    table = num;
+    try { sessionStorage.setItem(TABLE_KEY, String(num)); } catch (e) {}
+    renderTableChip();
+    renderTableArea();
+  }
+  chipBtn.addEventListener('click', function () { picker.hidden = !picker.hidden; });
+  picker.hidden = !!table;
+  renderTableChip();
+
+  function ensureTable() {
+    if (table) return true;
+    picker.hidden = false;
+    renderTableChip();
+    header.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    return false;
+  }
+
+  /* ---------------- Cart ---------------- */
+  var cart = {}; /* name -> qty */
+  var cartNote = '';
+  var lastPlacedId = null;
+
+  function cartCount() {
+    return Object.keys(cart).reduce(function (s, name) { return s + cart[name]; }, 0);
+  }
+  function cartTotal() {
+    return Object.keys(cart).reduce(function (s, name) { return s + byName[name].price * cart[name]; }, 0);
+  }
+  function cartItemsArray() {
+    return Object.keys(cart).filter(function (name) { return cart[name] > 0; }).map(function (name) {
+      return { name: name, price: byName[name].price, qty: cart[name] };
+    });
+  }
+  function setQty(name, qty) {
+    if (qty <= 0) { delete cart[name]; } else { cart[name] = qty; }
+    renderControls();
+    renderCartBar();
+    if (cartDialog.open) renderCartSheet();
+  }
+
+  function makeStepper(name, qty) {
+    var wrap = document.createElement('span');
+    wrap.className = 'stepper';
+    var minus = document.createElement('button');
+    minus.type = 'button';
+    minus.className = 'step-btn';
+    minus.textContent = '−';
+    minus.setAttribute('aria-label', 'Remove one ' + name);
+    minus.addEventListener('click', function () { setQty(name, (cart[name] || 0) - 1); });
+    var q = document.createElement('span');
+    q.className = 'step-qty';
+    q.textContent = String(qty);
+    q.setAttribute('aria-label', qty + ' in your order');
+    var plus = document.createElement('button');
+    plus.type = 'button';
+    plus.className = 'step-btn';
+    plus.textContent = '+';
+    plus.setAttribute('aria-label', 'Add one more ' + name);
+    plus.addEventListener('click', function () { setQty(name, (cart[name] || 0) + 1); });
+    wrap.appendChild(minus);
+    wrap.appendChild(q);
+    wrap.appendChild(plus);
+    return wrap;
+  }
+
+  /* Add / stepper control under every menu item */
+  var holders = [];
+  document.querySelectorAll('article.item').forEach(function (art) {
+    var h3 = art.querySelector('.item-head h3');
+    if (!h3) return;
+    var name = h3.textContent.replace(/★/g, '').trim();
+    if (!byName[name]) return;
+    var holder = document.createElement('div');
+    holder.className = 'item-actions';
+    holder.setAttribute('data-name', name);
+    art.appendChild(holder);
+    holders.push(holder);
+  });
+
+  function renderControls() {
+    holders.forEach(function (holder) {
+      var name = holder.getAttribute('data-name');
+      var qty = cart[name] || 0;
+      holder.replaceChildren();
+      if (qty === 0) {
+        var b = document.createElement('button');
+        b.type = 'button';
+        b.className = 'add-btn';
+        b.textContent = 'Add';
+        b.setAttribute('aria-label', 'Add ' + name + ' to your order');
+        b.addEventListener('click', function () {
+          if (!ensureTable()) return;
+          cart[name] = 1;
+          renderControls();
+          renderCartBar();
+        });
+        holder.appendChild(b);
+      } else {
+        holder.appendChild(makeStepper(name, qty));
+      }
+    });
+  }
+
+  /* ---------------- Cart bar ---------------- */
+  var cartBar = document.createElement('div');
+  cartBar.className = 'cart-bar';
+  cartBar.innerHTML = '<span class="cart-summary"></span><button type="button" class="cart-view">View order</button>';
+  document.body.appendChild(cartBar);
+  var cartSummary = cartBar.querySelector('.cart-summary');
+  cartBar.querySelector('.cart-view').addEventListener('click', function () {
+    renderCartSheet();
+    openSheet(cartDialog);
+  });
+  function renderCartBar() {
+    var c = cartCount();
+    if (c > 0) {
+      cartBar.classList.add('show');
+      document.body.classList.add('has-cartbar');
+      cartSummary.textContent = c + (c === 1 ? ' item' : ' items') + ' · ' + S.fmt(cartTotal());
+    } else {
+      cartBar.classList.remove('show');
+      document.body.classList.remove('has-cartbar');
+    }
+  }
+
+  /* ---------------- Sheets ---------------- */
+  function buildSheet(id, title, label) {
+    var d = document.createElement('dialog');
+    d.className = 'sheet';
+    d.id = id;
+    d.setAttribute('aria-label', label);
+    d.innerHTML =
+      '<div class="sheet-card">' +
+        '<div class="sheet-head"><h2></h2><button type="button" class="sheet-close" aria-label="Close">&times;</button></div>' +
+        '<div class="sheet-body"></div>' +
+        '<div class="sheet-foot"></div>' +
+      '</div>';
+    d.querySelector('h2').textContent = title;
+    d.querySelector('.sheet-close').addEventListener('click', function () { closeSheet(d); });
+    d.addEventListener('click', function (e) { if (e.target === d) closeSheet(d); });
+    document.body.appendChild(d);
+    return d;
+  }
+  function openSheet(d) {
+    if (d.open) return;
+    if (typeof d.showModal === 'function') {
+      try { d.showModal(); return; } catch (e) {}
+    }
+    d.setAttribute('open', '');
+  }
+  function closeSheet(d) {
+    if (typeof d.close === 'function' && d.open) { try { d.close(); return; } catch (e) {} }
+    d.removeAttribute('open');
+  }
+
+  /* ---------------- Cart sheet ---------------- */
+  var cartDialog = buildSheet('cartSheet', 'Your order', 'Your order');
+  var cartBody = cartDialog.querySelector('.sheet-body');
+  var cartFoot = cartDialog.querySelector('.sheet-foot');
+
+  function renderCartSheet() {
+    cartDialog.querySelector('h2').textContent = 'Your order' + (table ? ' — Table ' + table : '');
+    var items = cartItemsArray();
+    if (!items.length) {
+      cartBody.innerHTML = '<p class="empty-note">Your order is empty — add a dish or a drink from the menu.</p>';
+      cartFoot.innerHTML = '';
+      return;
+    }
+    var html = '';
+    items.forEach(function (it) {
+      html +=
+        '<div class="cart-line">' +
+          '<div class="cart-line-info"><div class="cart-line-name">' + S.esc(it.name) + '</div>' +
+          '<div class="cart-line-unit">' + fmtPrice(byName[it.name]) + ' each</div></div>' +
+          '<span class="step-slot" data-name="' + S.esc(it.name) + '"></span>' +
+          '<span class="cart-line-total">' + S.fmt(it.price * it.qty) + '</span>' +
+          '<button type="button" class="remove-btn" data-remove="' + S.esc(it.name) + '" aria-label="Remove ' + S.esc(it.name) + '">&times;</button>' +
+        '</div>';
+    });
+    html += '<label class="note-label" for="cartNote">Note for the kitchen (optional)</label>' +
+            '<textarea class="note-input" id="cartNote" rows="2" placeholder="e.g. no chilli, extra lemon…"></textarea>';
+    cartBody.innerHTML = html;
+    cartBody.querySelectorAll('.step-slot').forEach(function (slot) {
+      var name = slot.getAttribute('data-name');
+      slot.replaceWith(makeStepper(name, cart[name] || 0));
+    });
+    cartBody.querySelectorAll('[data-remove]').forEach(function (btn) {
+      btn.addEventListener('click', function () { setQty(btn.getAttribute('data-remove'), 0); });
+    });
+    var noteEl = cartBody.querySelector('#cartNote');
+    noteEl.value = cartNote;
+    noteEl.addEventListener('input', function () { cartNote = noteEl.value; });
+    cartFoot.innerHTML =
+      '<div class="sheet-total"><span>Total</span><span>' + S.fmt(cartTotal()) + '</span></div>' +
+      '<button type="button" class="primary-btn" id="placeOrderBtn">Place order</button>';
+    cartFoot.querySelector('#placeOrderBtn').addEventListener('click', placeOrder);
+  }
+
+  function placeOrder() {
+    if (!ensureTable()) { closeSheet(cartDialog); return; }
+    var items = cartItemsArray();
+    if (!items.length) return;
+    var order = S.placeOrder(table, items, cartNote.trim());
+    cart = {};
+    cartNote = '';
+    lastPlacedId = order.id;
+    renderControls();
+    renderCartBar();
+    renderTableArea();
+    cartDialog.querySelector('h2').textContent = 'Order sent';
+    cartBody.innerHTML =
+      '<div class="confirm-msg"><p class="big">Order ' + S.esc(order.id) + ' — sent to the kitchen</p>' +
+      '<p>Thank you. You can follow your order under “Your orders” below, and pay whenever you are ready.</p></div>';
+    cartFoot.innerHTML = '<button type="button" class="primary-btn" id="placedDoneBtn">Done</button>';
+    cartFoot.querySelector('#placedDoneBtn').addEventListener('click', function () {
+      closeSheet(cartDialog);
+      var area = document.getElementById('table-area');
+      if (area) area.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    });
+  }
+
+  /* ---------------- Your orders & bill ---------------- */
+  var area = document.createElement('section');
+  area.className = 'table-area';
+  area.id = 'table-area';
+  area.hidden = true;
+  var footer = document.querySelector('.site-footer');
+  footer.parentNode.insertBefore(area, footer);
+
+  function myOrders() {
+    if (!table) return [];
+    return S.loadOrders().filter(function (o) { return o.table === table && !o.closed; });
+  }
+  function orderLinesHtml(o) {
+    var html = '<div class="order-lines">';
+    o.items.forEach(function (it) {
+      html += '<div class="order-line"><span>' + it.qty + ' × ' + S.esc(it.name) + '</span><span class="amt">' + S.fmt(it.price * it.qty) + '</span></div>';
+    });
+    html += '</div>';
+    if (o.note) html += '<p class="order-note">“' + S.esc(o.note) + '”</p>';
+    return html;
+  }
+
+  function renderTableArea() {
+    var orders = myOrders();
+    if (!table || !orders.length) { area.hidden = true; area.innerHTML = ''; return; }
+    area.hidden = false;
+    var html = '<div class="wrap"><div class="sec-head"><h2>Your orders — Table ' + table + '</h2></div>';
+    if (lastPlacedId && orders.some(function (o) { return o.id === lastPlacedId; })) {
+      html += '<div class="just-placed">Order <strong>' + S.esc(lastPlacedId) + '</strong> was sent to the kitchen — follow it here.</div>';
+    }
+    orders.forEach(function (o) {
+      html +=
+        '<article class="order-card">' +
+          '<div class="order-top"><span class="order-id">' + S.esc(o.id) + '</span>' +
+          '<span class="pill pill-status' + (o.status === 'ready' ? ' ready' : '') + '">' + STATUS_LABELS[o.status] + '</span>' +
+          (o.pay === 'paid'
+            ? '<span class="pill pill-paid">Paid · ' + S.esc(o.method || '') + '</span>'
+            : '<span class="pill pill-unpaid">Unpaid</span>') +
+          '<span class="order-time">' + S.timeStr(o.ts) + '</span></div>' +
+          orderLinesHtml(o) +
+          '<div class="order-line" style="margin-top:6px"><span></span><span class="amt">' + S.fmt(S.orderTotal(o.items)) + '</span></div>' +
+        '</article>';
+    });
+
+    /* Bill */
+    var grand = 0, paidSum = 0;
+    orders.forEach(function (o) {
+      var t = S.orderTotal(o.items);
+      grand += t;
+      if (o.pay === 'paid') paidSum += t;
+    });
+    var unpaid = grand - paidSum;
+    html += '<div class="bill-card"><h3>My bill — Table ' + table + '</h3>';
+    orders.forEach(function (o) {
+      html += '<div class="order-line"><span>' + S.esc(o.id) + ' · ' + o.items.reduce(function (s, i) { return s + i.qty; }, 0) + ' items' +
+        (o.pay === 'paid' ? ' · Paid (' + S.esc(o.method || '') + ')' : ' · Unpaid') +
+        '</span><span class="amt">' + S.fmt(S.orderTotal(o.items)) + '</span></div>';
+    });
+    html += '<div class="bill-grand"><span>Total</span><span>' + S.fmt(grand) + '</span></div>';
+    if (unpaid > 0) {
+      if (paidSum > 0) html += '<p class="bill-state">' + S.fmt(paidSum) + ' paid · ' + S.fmt(unpaid) + ' still to pay</p>';
+      html += '<button type="button" class="primary-btn" id="payBillBtn">Pay bill · ' + S.fmt(unpaid) + '</button>';
+    } else {
+      html += '<p class="bill-state">Paid — thank you. We hope to see you again at Calypso.</p>';
+    }
+    html += '</div></div>';
+    area.innerHTML = html;
+    var payBtn = area.querySelector('#payBillBtn');
+    if (payBtn) payBtn.addEventListener('click', openPayment);
+  }
+
+  /* ---------------- Payment + review ---------------- */
+  var payDialog = buildSheet('paySheet', 'Pay your bill', 'Pay your bill');
+  var payBody = payDialog.querySelector('.sheet-body');
+  var payFoot = payDialog.querySelector('.sheet-foot');
+  var payMethod = 'Cash';
+  var METHODS = ['Cash', 'Mobile money', 'Card'];
+
+  function unpaidOrders() {
+    return myOrders().filter(function (o) { return o.pay !== 'paid'; });
+  }
+
+  function openPayment() {
+    var unpaid = unpaidOrders();
+    if (!unpaid.length) return;
+    var total = unpaid.reduce(function (s, o) { return s + S.orderTotal(o.items); }, 0);
+    payDialog.querySelector('h2').textContent = 'Pay your bill — Table ' + table;
+    var html = '<div class="confirm-msg"><p class="big">' + S.fmt(total) + '</p><p>Choose how you would like to pay.</p></div>';
+    html += '<div class="pay-methods" role="group" aria-label="Payment method">';
+    METHODS.forEach(function (m) {
+      html += '<button type="button" class="pay-method' + (m === payMethod ? ' selected' : '') + '" data-method="' + m + '">' + m + '</button>';
+    });
+    html += '</div>';
+    html += '<p class="demo-print">Demonstration payment — no real charge is made.</p>';
+    payBody.innerHTML = html;
+    payBody.querySelectorAll('.pay-method').forEach(function (btn) {
+      btn.addEventListener('click', function () {
+        payMethod = btn.getAttribute('data-method');
+        payBody.querySelectorAll('.pay-method').forEach(function (b) {
+          b.classList.toggle('selected', b.getAttribute('data-method') === payMethod);
+        });
+      });
+    });
+    payFoot.innerHTML = '<button type="button" class="primary-btn" id="confirmPayBtn">Pay ' + S.fmt(total) + '</button>';
+    payFoot.querySelector('#confirmPayBtn').addEventListener('click', confirmPayment);
+    openSheet(payDialog);
+  }
+
+  function promptedIds() {
+    try { return JSON.parse(sessionStorage.getItem(PROMPTED_KEY) || '[]'); } catch (e) { return []; }
+  }
+  function markPrompted(ids) {
+    var p = promptedIds();
+    ids.forEach(function (id) { if (p.indexOf(id) === -1) p.push(id); });
+    try { sessionStorage.setItem(PROMPTED_KEY, JSON.stringify(p)); } catch (e) {}
+  }
+
+  function confirmPayment() {
+    var unpaid = unpaidOrders();
+    if (!unpaid.length) { closeSheet(payDialog); return; }
+    var ids = unpaid.map(function (o) { return o.id; });
+    S.payOrders(ids, payMethod);
+    lastPlacedId = null;
+    renderTableArea();
+    showPaidState(ids);
+  }
+
+  function showPaidState(paidIds) {
+    payDialog.querySelector('h2').textContent = 'Payment complete';
+    var already = paidIds.every(function (id) { return promptedIds().indexOf(id) !== -1; });
+    var html = '<div class="confirm-msg"><p class="big">Paid — thank you</p><p>Your bill is settled. We hope you enjoyed Calypso.</p></div>';
+    if (!already) {
+      markPrompted(paidIds);
+      html +=
+        '<div class="review-block" id="reviewBlock">' +
+          '<h3>How was your meal?</h3>' +
+          '<div class="stars" role="radiogroup" aria-label="Star rating">' +
+            [1, 2, 3, 4, 5].map(function (i) {
+              return '<button type="button" class="star-btn" data-star="' + i + '" role="radio" aria-checked="false" aria-label="' + i + ' star' + (i > 1 ? 's' : '') + '">★</button>';
+            }).join('') +
+          '</div>' +
+          '<p class="review-hint" id="reviewHint"></p>' +
+          '<textarea class="comment-input" id="reviewComment" rows="2" placeholder="Add a comment (optional)"></textarea>' +
+          '<button type="button" class="primary-btn" id="reviewSend" style="margin-top:14px">Send review</button>' +
+          '<button type="button" class="ghost-btn" id="reviewSkip">Not now</button>' +
+        '</div>';
+    }
+    payBody.innerHTML = html;
+    payFoot.innerHTML = '<button type="button" class="ghost-btn" id="paidCloseBtn" style="margin-top:0">Close</button>';
+    payFoot.querySelector('#paidCloseBtn').addEventListener('click', function () { closeSheet(payDialog); });
+
+    if (!already) {
+      var rating = 0;
+      var starBtns = payBody.querySelectorAll('.star-btn');
+      starBtns.forEach(function (btn) {
+        btn.addEventListener('click', function () {
+          rating = parseInt(btn.getAttribute('data-star'), 10);
+          starBtns.forEach(function (b) {
+            var on = parseInt(b.getAttribute('data-star'), 10) <= rating;
+            b.classList.toggle('on', on);
+            b.setAttribute('aria-checked', on && parseInt(b.getAttribute('data-star'), 10) === rating ? 'true' : 'false');
+          });
+          payBody.querySelector('#reviewHint').textContent = '';
+        });
+      });
+      payBody.querySelector('#reviewSkip').addEventListener('click', function () { closeSheet(payDialog); });
+      payBody.querySelector('#reviewSend').addEventListener('click', function () {
+        if (!rating) {
+          payBody.querySelector('#reviewHint').textContent = 'Please tap a star rating first.';
+          return;
+        }
+        var comment = payBody.querySelector('#reviewComment').value.trim();
+        S.saveReview({ table: table, stars: rating, comment: comment, ts: Date.now(), orderIds: paidIds.slice() });
+        var block = payBody.querySelector('#reviewBlock');
+        block.replaceWith(Object.assign(document.createElement('div'), { className: 'review-thanks' }));
+        payBody.querySelector('.review-thanks').textContent = 'Thank you — we hope to see you again at Calypso.';
+      });
+    }
+  }
+
+  /* ---------------- Live updates & init ---------------- */
+  S.onChange(function () { renderTableArea(); });
+  renderControls();
+  renderCartBar();
+  renderTableArea();
+})();
+
 </script>
 </body>
 </html>
