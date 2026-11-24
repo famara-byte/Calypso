@@ -10,7 +10,6 @@
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,500&family=Jost:wght@400;500;600&display=swap" rel="stylesheet" />
-<noscript><style>.reveal{opacity:1 !important;transform:none !important}</style></noscript>
 <style>
   :root{
     --green-950:#0d2417; --green-900:#123524; --green-800:#1a4630; --green-700:#256344;
@@ -18,6 +17,9 @@
     --ink:#1c2a20; --muted:#5c6a5e; --card:#fffdf7; --line:rgba(18,53,36,.14);
     --bg:var(--sand); --surface:var(--card); --text:var(--ink);
     --radius:18px;
+    /* Motion scale — one timing/easing language across the page */
+    --dur-1:150ms; --dur-2:250ms; --dur-3:400ms;
+    --ease-out:cubic-bezier(.22,1,.36,1); --ease-soft:cubic-bezier(.4,0,.2,1);
   }
   @media (prefers-color-scheme: dark){
     :root{
@@ -47,8 +49,9 @@
   .brand span{color:var(--gold-soft)}
   .nav-links{display:flex;gap:1.6rem;align-items:center}
   .nav-links a{color:rgba(255,255,255,.88);text-decoration:none;font-size:.95rem;letter-spacing:.04em}
+  .nav-links a:not(.btn){display:inline-flex;align-items:center;min-height:44px;padding:.35rem .3rem}
   .nav-links a:hover{color:var(--gold-soft)}
-  .btn{display:inline-flex;align-items:center;gap:.5rem;border-radius:999px;padding:.72rem 1.45rem;font-weight:600;font-size:.98rem;text-decoration:none;border:1px solid transparent;cursor:pointer;font-family:inherit;transition:transform .15s,background .2s}
+  .btn{display:inline-flex;align-items:center;gap:.5rem;border-radius:999px;padding:.72rem 1.45rem;min-height:44px;font-weight:600;font-size:.98rem;text-decoration:none;border:1px solid transparent;cursor:pointer;font-family:inherit;transition:transform var(--dur-1) var(--ease-soft),background var(--dur-2) var(--ease-soft)}
   .btn:active{transform:scale(.98)}
   .btn-gold{background:var(--gold);color:#231a05}
   .btn-gold:hover{background:var(--gold-soft)}
@@ -56,8 +59,8 @@
   .btn-ghost:hover{border-color:#fff}
   .btn-green{background:var(--green-900);color:#fff}
   .btn-green:hover{background:var(--green-800)}
-  .btn-sm{padding:.55rem 1.1rem;font-size:.9rem}
-  .burger{display:none;background:none;border:0;color:#fff;font-size:1.5rem;cursor:pointer;line-height:1}
+  .btn-sm{padding:.62rem 1.1rem;font-size:.9rem}
+  .burger{display:none;background:none;border:0;color:#fff;font-size:1.5rem;cursor:pointer;line-height:1;min-width:44px;min-height:44px}
   @media (max-width:760px){
     .burger{display:block}
     .nav-links{position:absolute;top:100%;left:0;right:0;background:rgba(13,36,23,.98);flex-direction:column;align-items:flex-start;padding:1.1rem 1.25rem 1.4rem;gap:1rem;display:none}
@@ -79,13 +82,15 @@
   .hero-nav-btn.next{right:1.1rem}
   .hero-dots-wrap{bottom:1.45rem;display:flex;justify-content:center}
   .hero-dots{display:flex;gap:.55rem;pointer-events:auto}
-  .hero-dot{width:11px;height:11px;border-radius:50%;border:1px solid rgba(255,255,255,.75);background:rgba(255,255,255,.25);padding:0;cursor:pointer;transition:background .25s,transform .25s}
-  .hero-dot.active{background:var(--gold);border-color:var(--gold);transform:scale(1.25)}
+  .hero-dot{width:44px;height:44px;border-radius:50%;border:0;background:transparent;padding:0;cursor:pointer;position:relative}
+  .hero-dot::before{content:"";position:absolute;inset:0;margin:auto;width:11px;height:11px;border-radius:50%;border:1px solid rgba(255,255,255,.75);background:rgba(255,255,255,.25);transition:background var(--dur-2) var(--ease-soft),transform var(--dur-2) var(--ease-soft)}
+  .hero-dot.active::before{background:var(--gold);border-color:var(--gold);transform:scale(1.25)}
+  @media (max-width:560px){.hero-dots{gap:0}.hero-dot{margin:0 -5px}}
   @media (max-width:760px){
     .hero-caption-wrap{top:auto;bottom:3.15rem;text-align:center}
   }
   @media (max-width:560px){
-    .hero-nav-btn{width:38px;height:38px;font-size:1.1rem}
+    .hero-nav-btn{width:44px;height:44px;font-size:1.1rem}
     .hero-nav-btn.prev{left:.55rem}
     .hero-nav-btn.next{right:.55rem}
     .hero-caption{font-size:.85rem;max-width:100%}
@@ -240,7 +245,7 @@
   .beat p{margin:0;font-size:.97rem}
   .beat p b{font-weight:600}
   .copy-row{display:flex;flex-wrap:wrap;gap:.6rem;margin-top:1.2rem}
-  .copy-btn{background:transparent;border:1px solid var(--line);color:var(--text);border-radius:999px;padding:.5rem 1rem;font-family:inherit;font-size:.9rem;cursor:pointer}
+  .copy-btn{background:transparent;border:1px solid var(--line);color:var(--text);border-radius:999px;padding:.7rem 1.05rem;min-height:44px;font-family:inherit;font-size:.9rem;cursor:pointer}
   .copy-btn:hover{border-color:var(--gold)}
   .copied{font-size:.88rem;color:var(--green-700);font-weight:600;align-self:center}
   @media (prefers-color-scheme: dark){.copied{color:var(--gold-soft)}}
@@ -312,9 +317,12 @@
   ::-webkit-scrollbar-track{background:var(--green-950)}
   ::-webkit-scrollbar-thumb{background:linear-gradient(var(--gold),var(--green-700));border-radius:99px;border:2px solid var(--green-950)}
   .scroll-progress{position:fixed;top:0;left:0;height:3px;width:0%;background:linear-gradient(90deg,var(--gold),#f0d99a,var(--gold));z-index:100;box-shadow:0 0 12px rgba(201,163,95,.7)}
-  /* Scroll reveals — perspective lift */
-  .reveal{opacity:0;transform:perspective(900px) translateY(38px) rotateX(5deg);transform-origin:center bottom;transition:opacity .9s cubic-bezier(.22,1,.36,1),transform .9s cubic-bezier(.22,1,.36,1)}
-  .reveal.in{opacity:1;transform:perspective(900px) translateY(0) rotateX(0)}
+  /* Keyboard focus — always visible, never removed */
+  a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible,[tabindex]:focus-visible{outline:3px solid var(--gold);outline-offset:3px;border-radius:6px}
+  /* Scroll reveals — content is fully visible by default. The pre-reveal
+     hidden state (opacity/transform) is applied by JavaScript only, so the
+     page reads perfectly with JS off or the Motion CDN unreachable. */
+  .reveal{will-change:transform,opacity}
   /* Hero — cinematic zoom + 3D title */
   .hero-slide{transform:scale(1.12)}
   .hero-slide.active{animation:kenburns 7s ease forwards}
@@ -353,7 +361,6 @@
   .btn-gold::after{content:"";position:absolute;inset:0;background:linear-gradient(115deg,transparent 30%,rgba(255,255,255,.45) 50%,transparent 70%);transform:translateX(-120%);transition:transform .6s ease}
   .btn-gold:hover::after{transform:translateX(120%)}
   @media (prefers-reduced-motion: reduce){
-    .reveal{opacity:1;transform:none;transition:none}
     .marquee-track{animation:none}
     .hero-slide.active{animation:none}
     .hero-scroll-cue::after{animation:none}
@@ -375,7 +382,6 @@
       <a href="#story">Our Story</a>
       <a href="#reserve">Reserve a Table</a>
       <a href="#visit">Find Us</a>
-      <a href="#growth">TikTok</a>
       <a class="btn btn-gold btn-sm" href="tel:+2203357788">Call +220 335 7788</a>
     </nav>
   </div>
@@ -401,7 +407,7 @@
   <div class="hero-ui hero-dots-wrap"><div class="hero-dots" id="heroDots" role="tablist" aria-label="Choose slide"></div></div>
   <div class="hero-in">
     <h1>Calypso Bar<br /><em>&amp; Restaurant</em></h1>
-    <p class="sub">Lunch under the palms, dinner beside the lagoon. At Calypso your table looks out over a wildlife pond in lush gardens at Cape Point Beach, Bakau — herons, kingfishers and monkeys drifting past as you eat.</p>
+    <p class="sub">Lunch under the palms, dinner beside the lagoon — a wildlife pond in lush gardens at Cape Point Beach, Bakau.</p>
     <div class="hero-ctas">
       <a class="btn btn-gold" href="#reserve">Reserve a Table</a>
       <a class="btn btn-ghost" href="tel:+2203357788">☎ Call +220 335 7788</a>
@@ -619,33 +625,33 @@
     <div class="section-head reveal">
       <p class="kicker">What Guests Love</p>
       <h2>Why guests love Calypso</h2>
-      <p>The same things come up in visit after visit — a table by the water, a warm welcome, and food worth returning for.</p>
+      <p>A table by the water, a warm welcome, and food worth returning for.</p>
     </div>
     <div class="love-grid">
       <article class="love-card wide reveal">
         <div class="num">01</div>
         <h3>Wildlife from your table</h3>
-        <p>Where else can you spot a kingfisher over lunch, watch crocodiles resting by the lagoon, and have monkeys wander past dessert? It's the experience guests describe as unlike anywhere else in Bakau.</p>
+        <p>Kingfishers over lunch, crocodiles by the lagoon, monkeys past dessert — unlike anywhere else in Bakau.</p>
       </article>
       <article class="love-card reveal">
         <div class="num">02</div>
         <h3>Friendly, attentive staff</h3>
-        <p>A warm welcome and service that looks after you — the team is one of the most-praised parts of a Calypso visit.</p>
+        <p>A warm welcome, and a team that really looks after you.</p>
       </article>
       <article class="love-card reveal">
         <div class="num">03</div>
         <h3>A peaceful, beautiful garden</h3>
-        <p>Lush grounds, shade, water and birdsong — a calm escape just moments from the beach and the hotels of Cape Point.</p>
+        <p>Shade, water and birdsong — a calm escape moments from the beach.</p>
       </article>
       <article class="love-card reveal">
         <div class="num">04</div>
         <h3>Good food, fair prices</h3>
-        <p>Generous cooking at moderate prices. Many guests return two, three, even more times during a single trip.</p>
+        <p>Generous cooking at moderate prices — guests return again and again.</p>
       </article>
       <article class="love-card reveal">
         <div class="num">05</div>
         <h3>Evenings made for two</h3>
-        <p>As the light fades, the garden turns relaxed and romantic — dinner, cocktails and live music to close the day.</p>
+        <p>Dinner, cocktails and live music as the garden turns romantic at dusk.</p>
       </article>
     </div>
   </div>
@@ -683,29 +689,29 @@
     <div class="section-head reveal">
       <p class="kicker">Our Story</p>
       <h2>A garden, a lagoon, and lunch with a view of the wild</h2>
-      <p>Most restaurants give you a table. Calypso gives you a front-row seat to nature — in one of Bakau's most peaceful garden settings, steps from Cape Point Beach.</p>
+      <p>Family-run since 1988 — a front-row seat to nature in a peaceful garden, steps from Cape Point Beach.</p>
     </div>
     <div class="exp-grid">
       <article class="exp-card reveal">
         <div class="ic"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><path d="M2 16c2.5 0 2.5 1.5 5 1.5S9.5 16 12 16s2.5 1.5 5 1.5 2.5-1.5 5-1.5"/><path d="M2 20c2.5 0 2.5 1.5 5 1.5S9.5 20 12 20s2.5 1.5 5 1.5 2.5-1.5 5-1.5"/><path d="M7 12c1-3 3-5 6-5 2 0 3 1 4 2-1.5 0-2.5.5-3.5 1.5C12.5 9.5 11 9 9.5 9.5"/></svg></div>
         <h3>The Wildlife Pond</h3>
-        <p>A natural lagoon sits at the heart of the grounds — home to herons, kingfishers and rich birdlife drifting past your table all day long.</p>
+        <p>The lagoon at the heart of the grounds — crocodiles fed daily at 4pm, with herons, kingfishers and monkeys drifting past your table.</p>
       </article>
       
       <article class="exp-card reveal">
         <div class="ic"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M2 12h2M20 12h2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg></div>
         <h3>Steps from Cape Point Beach</h3>
-        <p>Right beside the beach and next to the Ocean Bay Hotel — come straight from the sand to a shaded table, a cold drink and a long, unhurried lunch.</p>
+        <p>Beside the beach, next to the Ocean Bay Hotel — straight from the sand to a shaded table and a cold drink.</p>
       </article>
       <article class="exp-card reveal">
         <div class="ic"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11l9-7 9 7"/><path d="M5.5 10.5V21h13V10.5"/><path d="M12 21v-6"/></svg></div>
         <h3>Garden Huts &amp; Cabanas</h3>
-        <p>Settle into a shaded garden hut by the water, gather on the terrace, or find a quiet corner under the big trees. Your pace, your corner of the garden.</p>
+        <p>A shaded hut by the water, the terrace, or a quiet corner under the big trees.</p>
       </article>
       <article class="exp-card reveal">
         <div class="ic"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18V5l11-2v13"/><circle cx="6.5" cy="18" r="2.5"/><circle cx="17.5" cy="16" r="2.5"/></svg></div>
         <h3>Live Music &amp; Jazz Bar</h3>
-        <p>As evening settles over the garden, the main bar comes alive — live music, a dedicated jazz bar, and a relaxed, romantic atmosphere.</p>
+        <p>Live music and a dedicated jazz bar as evening settles over the garden.</p>
       </article>
     </div>
     <div class="photos reveal">
@@ -760,7 +766,7 @@
         <h3>Prefer to call?</h3>
         <p>Call us and we&rsquo;ll book you in straight away. We&rsquo;re open daily 09:00 – 22:00 at Cape Point Beach, Bakau, next to the Ocean Bay Hotel.</p>
         <a class="btn btn-green" href="tel:+2203357788" style="width:100%;justify-content:center;margin-bottom:.7rem">☎ Call +220 335 7788</a>
-        <p style="margin:0">For groups, birthdays and events, call ahead so we can set up a garden hut or a larger table by the lagoon for you.</p>
+        <p style="margin:0">For groups and events, call ahead — we&rsquo;ll set up a garden hut or a larger table by the lagoon.</p>
       </aside>
     </div>
   </div>
@@ -777,9 +783,9 @@
       <div class="visit-card reveal">
         <h3>Calypso Bar &amp; Restaurant</h3>
         <div class="visit-rows">
-          <div class="visit-row"><div class="ic"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M12 21s-7-5.5-7-11a7 7 0 1 1 14 0c0 5.5-7 11-7 11Z"/><circle cx="12" cy="10" r="2.6"/></svg></div><div><b>Cape Point Beach, Bakau, The Gambia</b><span>Right next to the Ocean Bay Hotel — an easy walk from the Cape Point hotels.</span></div></div>
-          <div class="visit-row"><div class="ic"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3.5 2"/></svg></div><div><b>Open daily, 09:00 – 22:00</b><span>Breakfast through dinner, brunch and drinks. Open all year round.</span></div></div>
-          <div class="visit-row"><div class="ic"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M5 4h4l2 5-2.5 1.5a12 12 0 0 0 5 5L15 13l5 2v4a2 2 0 0 1-2 2A16 16 0 0 1 3 6a2 2 0 0 1 2-2Z"/></svg></div><div><b>+220 335 7788</b><span>Call to reserve your table, or use the Reserve a Table form above.</span></div></div>
+          <div class="visit-row"><div class="ic"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M12 21s-7-5.5-7-11a7 7 0 1 1 14 0c0 5.5-7 11-7 11Z"/><circle cx="12" cy="10" r="2.6"/></svg></div><div><b>Cape Point Beach, Bakau, The Gambia</b><span>Next to the Ocean Bay Hotel — an easy walk from the Cape Point hotels.</span></div></div>
+          <div class="visit-row"><div class="ic"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3.5 2"/></svg></div><div><b>Open daily, 09:00 – 22:00</b><span>Breakfast through dinner and drinks, all year round.</span></div></div>
+          <div class="visit-row"><div class="ic"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M5 4h4l2 5-2.5 1.5a12 12 0 0 0 5 5L15 13l5 2v4a2 2 0 0 1-2 2A16 16 0 0 1 3 6a2 2 0 0 1 2-2Z"/></svg></div><div><b>+220 335 7788</b><span>Call to reserve, or use the form above.</span></div></div>
           <div class="visit-row"><div class="ic"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M8 12h8M12 8v8"/></svg></div><div><b>Good to know</b><span>Reservations welcome · Parking available · Wheelchair accessible.</span></div></div>
         </div>
         <div style="display:flex;flex-wrap:wrap;gap:.6rem;margin-top:1.5rem">
@@ -803,44 +809,6 @@
 </section>
 
 
-<!-- GROWTH PACK: TIKTOK + SEO + ADS -->
-<section class="pack-sec" id="growth">
-  <div class="wrap">
-    <div class="section-head reveal">
-      <p class="kicker">Made to Be Found</p>
-      <h2>The TikTok commercial</h2>
-      <p>A ready-to-film 30-second vertical commercial built on what makes Calypso special — the garden, the lagoon and the food.</p>
-    </div>
-
-    <div class="tiktok-grid">
-      <div class="phone reveal" role="img" aria-label="Preview of the Calypso TikTok commercial: garden lagoon photo with the opening line 'POV: your lunch date is a crocodile'">
-        <img src="assets/lagoon.jpg" alt="" />
-        <div class="phone-ui">
-          <p class="tt-hook">“POV: your lunch date is a crocodile.”</p>
-          <div>
-            <div class="tt-user">@calypsobakau</div>
-            <p class="tt-cap">Lunch by the lagoon, Cape Point Beach, Bakau. Call +220 335 7788 to book your table.</p>
-            <div class="tt-tags">#Gambia #Bakau #CapePoint #VisitGambia #Seafood #TravelTok</div>
-          </div>
-        </div>
-      </div>
-      <div class="script-card reveal">
-        <h3>30-second TikTok script — “Lunch With the Locals”</h3>
-        <div class="beat"><span class="t">0–3s</span><p><b>Hook, close on the lagoon:</b> “POV: your lunch date is a crocodile.” Text on screen, crocodile glides past.</p></div>
-        <div class="beat"><span class="t">3–9s</span><p><b>Walk-through:</b> palms, garden huts, terrace. Voiceover: “This is Calypso — Cape Point's garden restaurant, at Cape Point Beach.”</p></div>
-        <div class="beat"><span class="t">9–17s</span><p><b>The food:</b> garlic prawns sizzling, prawn skewers off the grill, seafood platter for two lands on the table.</p></div>
-        <div class="beat"><span class="t">17–25s</span><p><b>The moment:</b> golden hour by the lagoon — monkeys in the trees, a kingfisher flash over the water, cocktails arriving at the table.</p></div>
-        <div class="beat"><span class="t">25–30s</span><p><b>End card:</b> “Calypso Bar &amp; Restaurant, Bakau. Open daily 9–10. Call +220 335 7788 to book your table.”</p></div>
-        <div class="copy-row">
-          <button class="copy-btn" data-copy="caption">Copy TikTok caption</button>
-          <button class="copy-btn" data-copy="script">Copy full script</button>
-          <span class="copied" id="copied-msg" aria-live="polite"></span>
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
-
 <footer>
   <div class="wrap foot-in">
     <div>
@@ -852,6 +820,7 @@
   </div>
 </footer>
 
+<script src="https://cdn.jsdelivr.net/npm/motion@latest/dist/motion.js"></script>
 <script>
 (function(){
   // Nav scroll + mobile menu
@@ -930,35 +899,112 @@
     });
   }
 
-  // ===== Premium upgrade: scroll reveals, parallax, 3D tilt =====
+  // ===== Premium upgrade: Motion springs, scroll parallax, 3D tilt =====
   var reduceMotion2 = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   // Duplicate marquee content for a seamless loop
   var mt = document.getElementById('marqueeTrack');
   if(mt){ mt.innerHTML += mt.innerHTML; }
-  // Reveal on scroll
-  var revealEls = document.querySelectorAll('.reveal');
-  if('IntersectionObserver' in window && !reduceMotion2){
-    var io = new IntersectionObserver(function(entries){
-      entries.forEach(function(en){ if(en.isIntersecting){ en.target.classList.add('in'); io.unobserve(en.target); } });
-    }, {threshold: .12, rootMargin: '0px 0px -6% 0px'});
-    revealEls.forEach(function(el){ io.observe(el); });
-  } else { revealEls.forEach(function(el){ el.classList.add('in'); }); }
-  // Scroll progress + hero & parallax motion (single rAF loop)
+
+  // Motion (the vanilla successor of Framer Motion) drives the springs when
+  // it loaded and the visitor allows motion. Every path degrades safely:
+  // content is visible by default, and pre-animation hidden states are set
+  // by JavaScript only — never in CSS — so nothing can get stuck invisible.
+  var M = (!reduceMotion2 && window.Motion && typeof window.Motion.animate === 'function') ? window.Motion : null;
+  var SPRING = { type: 'spring', stiffness: 120, damping: 20 };
+  function whenDone(anim, fn){
+    try {
+      if(anim && typeof anim.then === 'function'){ anim.then(fn, fn); return; }
+      if(anim && anim.finished && typeof anim.finished.then === 'function'){ anim.finished.then(fn, fn); }
+    } catch(e){ /* cleanup timer below still runs */ }
+  }
+
+  // --- Reveal on scroll: spring entrance via Motion, IO + CSS-transition fallback
+  var revealEls = Array.prototype.slice.call(document.querySelectorAll('.reveal'));
+  revealEls.forEach(function(el){
+    var sibs = Array.prototype.filter.call(el.parentElement.children, function(c){ return c.classList && c.classList.contains('reveal'); });
+    el._stagger = Math.max(0, sibs.indexOf(el)) * 0.06; // ~60ms stagger for grid children
+  });
+  function cleanupReveal(el){ el.style.opacity = ''; el.style.transform = ''; el.style.transition = ''; el.classList.add('in'); }
+  function animateReveal(el){
+    if(el._revealed) return; el._revealed = true;
+    if(M){
+      var anim = M.animate(el, { opacity: [0, 1], transform: ['translateY(28px) scale(.98)', 'translateY(0px) scale(1)'] },
+        Object.assign({}, SPRING, { delay: el._stagger || 0 }));
+      whenDone(anim, function(){ cleanupReveal(el); });
+      setTimeout(function(){ cleanupReveal(el); }, 1800);
+    } else {
+      el.style.opacity = '1'; el.style.transform = 'translateY(0px)';
+      setTimeout(function(){ cleanupReveal(el); }, 850);
+    }
+  }
+  if(!reduceMotion2 && revealEls.length){
+    revealEls.forEach(function(el){
+      el.style.opacity = '0';
+      el.style.transform = 'translateY(28px) scale(.98)';
+      if(!M){ el.style.transition = 'opacity .7s cubic-bezier(.22,1,.36,1), transform .7s cubic-bezier(.22,1,.36,1)'; }
+    });
+    if(M && typeof M.inView === 'function'){
+      revealEls.forEach(function(el){ M.inView(el, function(){ animateReveal(el); }, { amount: 0.12 }); });
+    } else if('IntersectionObserver' in window){
+      var io = new IntersectionObserver(function(entries){
+        entries.forEach(function(en){ if(en.isIntersecting){ animateReveal(en.target); io.unobserve(en.target); } });
+      }, { threshold: .12, rootMargin: '0px 0px -6% 0px' });
+      revealEls.forEach(function(el){ io.observe(el); });
+    } else {
+      revealEls.forEach(function(el){ cleanupReveal(el); });
+    }
+  }
+
+  // --- Hero entrance: headline, sub and CTAs spring in on load (Motion only;
+  // without Motion they are simply visible, exactly as authored)
+  var heroIn = document.querySelector('.hero-in');
+  if(M && heroIn){
+    heroIn.querySelectorAll('h1, .sub, .hero-ctas, .hero-meta').forEach(function(el, i){
+      el.style.opacity = '0'; el.style.transform = 'translateY(24px)';
+      var a = M.animate(el, { opacity: [0, 1], transform: ['translateY(24px)', 'translateY(0px)'] },
+        Object.assign({}, SPRING, { delay: 0.08 + i * 0.09 }));
+      var done = function(){ el.style.opacity = ''; el.style.transform = ''; };
+      whenDone(a, done); setTimeout(done, 2000);
+    });
+  }
+
+  // --- Scroll progress + parallax: Motion.scroll when available, rAF otherwise
   var floatCall = document.querySelector('.float-call');
   var progress = document.getElementById('scrollProgress');
-  var heroIn = document.querySelector('.hero-in');
   var pImgs = Array.prototype.slice.call(document.querySelectorAll('.parallax-img'));
+  var motionProgress = false, motionParallax = false;
+  if(M && typeof M.scroll === 'function'){
+    try {
+      M.scroll(function(info){
+        var p = (typeof info === 'number') ? info
+          : (info && info.y && typeof info.y.progress === 'number') ? info.y.progress
+          : (info && typeof info.progress === 'number') ? info.progress : null;
+        if(p !== null && progress){ motionProgress = true; progress.style.width = (p * 100) + '%'; }
+      });
+    } catch(e){ /* rAF fallback below covers the progress bar */ }
+    try {
+      pImgs.forEach(function(img){
+        M.scroll(
+          M.animate(img, { transform: ['translateY(26px) scale(1.03)', 'translateY(-26px) scale(1.03)'] }),
+          { target: img.parentElement, offset: ['start end', 'end start'] }
+        );
+      });
+      if(pImgs.length) motionParallax = true;
+    } catch(e){ motionParallax = false; }
+  }
   var ticking = false;
   function onScrollFx(){
     var y = window.scrollY || 0;
-    var h = document.documentElement.scrollHeight - window.innerHeight;
-    if(progress) progress.style.width = (h > 0 ? (y / h) * 100 : 0) + '%';
+    if(!motionProgress && progress){
+      var h = document.documentElement.scrollHeight - window.innerHeight;
+      progress.style.width = (h > 0 ? (y / h) * 100 : 0) + '%';
+    }
     if(floatCall) floatCall.classList.toggle('show', y > window.innerHeight * .78);
     if(heroIn && y < window.innerHeight && !reduceMotion2){
       heroIn.style.transform = 'translateY(' + (y * .22) + 'px)';
       heroIn.style.opacity = String(Math.max(0, 1 - y / (window.innerHeight * .85)));
     }
-    if(!reduceMotion2){
+    if(!reduceMotion2 && !motionParallax){
       pImgs.forEach(function(img){
         var r = img.parentElement.getBoundingClientRect();
         if(r.bottom > 0 && r.top < window.innerHeight){
@@ -995,23 +1041,6 @@
     }
   }
 
-  // Copy helpers for the TikTok pack
-  var texts = {
-    caption: 'Lunch by the lagoon — Calypso Bar & Restaurant — Cape Point Beach, Bakau, The Gambia. Open daily 9am–10pm. Call +220 335 7788 to book your table. #Gambia #Bakau #CapePoint #VisitGambia #Seafood #TravelTok',
-    script: 'CALYPSO TIKTOK — "Lunch With the Locals" (30s)\n0–3s HOOK: Close on the lagoon. "POV: your lunch date is a crocodile."\n3–9s WALK-THROUGH: Palms, garden huts, terrace. VO: "This is Calypso — Cape Point\'s garden restaurant, at Cape Point Beach."\n9–17s FOOD: Garlic prawns, prawn skewers, seafood platter for two.\n17–25s MOMENT: Golden hour by the lagoon — monkeys in the trees, kingfisher over the water.\n25–30s END CARD: "Calypso Bar & Restaurant, Bakau. Open daily 9–10. Call +220 335 7788 to book your table."'
-  };
-  var msg = document.getElementById('copied-msg');
-  document.querySelectorAll('[data-copy]').forEach(function(btn){
-    btn.addEventListener('click', function(){
-      var t = texts[btn.getAttribute('data-copy')];
-      function done(){ msg.textContent = 'Copied — ready to paste.'; setTimeout(function(){ msg.textContent=''; }, 2600); }
-      if(navigator.clipboard && navigator.clipboard.writeText){ navigator.clipboard.writeText(t).then(done).catch(done); }
-      else {
-        var ta = document.createElement('textarea'); ta.value = t; document.body.appendChild(ta);
-        ta.select(); try{ document.execCommand('copy'); }catch(e){} document.body.removeChild(ta); done();
-      }
-    });
-  });
 })();
 </script>
 </body>
