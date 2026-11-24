@@ -17,3 +17,9 @@ Demo version. Menu prices are sample estimates, to be replaced with Calypso's re
 - Calypso Bar and Restaurant, Cape Point, Bakau, The Gambia
 - Est. 1988 · Wildlife lagoon with daily crocodile feeding at 4pm
 - Phone: +220 335 7788
+
+## Ordering system (demo)
+- `menu.html` — guest menu with table ordering, bill and demo payment; add `?t=N` for the table number (QR codes per table). After payment, guests are asked for a star review.
+- `kitchen.html` — live kitchen board: New → Preparing → Ready → Served.
+- `pos.html` — cashier POS: bills by table, take payment & close, today summary, latest reviews.
+The three screens sync live in the same browser (localStorage) for demonstration; production multi-device use needs a cloud backend.
