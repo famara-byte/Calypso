@@ -1,0 +1,8 @@
+{
+  "runtime": "static",
+  "platformVersion": 15,
+  "entry": "index.html",
+  "name": "Calypso Bar and Restaurant Website",
+  "slug": "calypso-bar-and-restaurant-website",
+  "managedCronJobs": []
+}
