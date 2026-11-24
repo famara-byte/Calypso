@@ -87,6 +87,36 @@
   .call-btn:active{transform:scale(.97)}
   .call-btn svg{width:18px;height:18px;flex:none}
 
+  /* ---------- Action bar (under the header) ---------- */
+  .action-bar{
+    max-width:760px;
+    margin:0 auto;
+    display:flex;
+    gap:10px;
+    padding:16px 18px 6px;
+  }
+  .action-btn{
+    flex:1;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    min-height:54px;
+    padding:13px 14px;
+    border:none;
+    border-radius:999px;
+    font-family:"Jost",system-ui,sans-serif;
+    font-size:16.5px;
+    font-weight:600;
+    cursor:pointer;
+    transition:transform 160ms var(--ease-out), background-color 200ms ease;
+  }
+  .action-btn:active{transform:scale(.97)}
+  .action-menu{background:var(--surface-dark);color:var(--sand)}
+  .action-pay{background:var(--gold);color:var(--ink)}
+  @media (hover:hover) and (pointer:fine){
+    .action-pay:hover{background:var(--gold-soft)}
+  }
+
   /* ---------- Category nav ---------- */
   .cat-nav{
     position:sticky;
@@ -726,6 +756,7 @@
     font-size:18px;
   }
   .bill-state{margin-top:10px;font-size:15px;color:var(--gold-soft)}
+  .bill-empty{font-size:16px;color:var(--sand)}
   .bill-card .primary-btn{margin-top:16px}
   .just-placed{
     background:rgba(201,163,95,.18);
@@ -1498,7 +1529,11 @@ var CalypsoStore = (function () {
   }
 
   function setStatus(id, status) {
-    return updateOrders([id], function (o) { o.status = status; return true; });
+    return updateOrders([id], function (o) {
+      o.status = status;
+      if (status === 'served') o.servedTs = Date.now();
+      return true;
+    });
   }
 
   function payOrders(ids, method) {
@@ -1863,6 +1898,10 @@ var CalypsoStore = (function () {
     try { sessionStorage.setItem(TABLE_KEY, String(num)); } catch (e) {}
     renderTableChip();
     renderTableArea();
+    if (pendingBill) {
+      pendingBill = false;
+      revealBill();
+    }
   }
   chipBtn.addEventListener('click', function () { picker.hidden = !picker.hidden; });
   picker.hidden = !!table;
@@ -1874,6 +1913,48 @@ var CalypsoStore = (function () {
     renderTableChip();
     header.scrollIntoView({ behavior: 'smooth', block: 'start' });
     return false;
+  }
+
+  /* ---------------- First-screen actions ---------------- */
+  var billRequested = false;
+  var pendingBill = false;
+
+  var actionBar = document.createElement('div');
+  actionBar.className = 'action-bar';
+  actionBar.innerHTML =
+    '<button type="button" class="action-btn action-menu" id="actionMenuBtn">View menu &amp; order</button>' +
+    '<button type="button" class="action-btn action-pay" id="actionPayBtn">Pay my bill</button>';
+  header.parentNode.insertBefore(actionBar, header.nextSibling);
+
+  actionBar.querySelector('#actionMenuBtn').addEventListener('click', function () {
+    var list = document.querySelector('main');
+    if (list) list.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  });
+  actionBar.querySelector('#actionPayBtn').addEventListener('click', function () {
+    if (!table) {
+      pendingBill = true;
+      ensureTable(); /* opens the table picker; setTable then reveals the bill */
+      return;
+    }
+    revealBill();
+  });
+
+  /* Show the table's bill (rendered by renderTableArea from the shared
+     cloud data, so it works in a fresh session). Gives the first cloud
+     fetch a moment to land before settling on the empty state. */
+  function revealBill() {
+    billRequested = true;
+    var waited = 0;
+    (function attempt() {
+      if (!S.loadOrders().length && waited < 1200) {
+        waited += 200;
+        window.setTimeout(attempt, 200);
+        return;
+      }
+      renderTableArea();
+      var areaEl = document.getElementById('table-area');
+      if (areaEl) areaEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    })();
   }
 
   /* ---------------- Cart ---------------- */
@@ -2118,7 +2199,17 @@ var CalypsoStore = (function () {
 
   function renderTableArea() {
     var orders = myOrders();
-    if (!table || !orders.length) { area.hidden = true; area.innerHTML = ''; return; }
+    if (!table || !orders.length) {
+      if (table && billRequested) {
+        area.hidden = false;
+        area.innerHTML = '<div class="wrap"><div class="sec-head"><h2>My bill — Table ' + table + '</h2></div>' +
+          '<div class="bill-card"><p class="bill-empty">No bill yet for Table ' + table + '. Order from the menu and your bill will appear here.</p></div></div>';
+      } else {
+        area.hidden = true;
+        area.innerHTML = '';
+      }
+      return;
+    }
     area.hidden = false;
     var html = '<div class="wrap"><div class="sec-head"><h2>Your orders — Table ' + table + '</h2></div>';
     if (lastPlacedId && orders.some(function (o) { return o.id === lastPlacedId; })) {

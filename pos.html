@@ -201,6 +201,9 @@
   .hist-row .h-main{font-weight:600}
   .hist-row .h-meta{color:var(--muted);font-size:13.5px}
   .hist-row .h-amt{font-weight:700;white-space:nowrap}
+  .ledger-totals{margin-top:12px;font-size:15.5px;font-weight:600}
+  .ledger-totals:empty{margin-top:0}
+  .pill-src{background:rgba(201,163,95,.28);color:#6d5312;margin-left:6px}
   .review-row{display:block}
   .review-top{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap}
   .review-stars{color:var(--gold);font-size:17px;letter-spacing:2px}
@@ -244,8 +247,9 @@
     <div id="bills"></div>
   </section>
 
-  <section aria-label="Settled bills today">
-    <div class="sec-head"><h2>Settled today</h2></div>
+  <section aria-label="Payments received today">
+    <div class="sec-head"><h2>Payments received today</h2></div>
+    <p class="ledger-totals" id="ledgerTotals"></p>
     <div id="history"></div>
   </section>
 
@@ -445,7 +449,11 @@ var CalypsoStore = (function () {
   }
 
   function setStatus(id, status) {
-    return updateOrders([id], function (o) { o.status = status; return true; });
+    return updateOrders([id], function (o) {
+      o.status = status;
+      if (status === 'served') o.servedTs = Date.now();
+      return true;
+    });
   }
 
   function payOrders(ids, method) {
@@ -630,23 +638,38 @@ var CalypsoStore = (function () {
       });
     });
 
-    /* History: today's settled (paid) bills, grouped by table + payment moment */
-    var paidToday = orders.filter(function (o) { return o.pay === 'paid' && o.paidTs && S.isToday(o.paidTs); });
-    var groups = {};
-    paidToday.forEach(function (o) {
-      var key = o.table + '|' + o.paidTs;
-      if (!groups[key]) groups[key] = { table: o.table, total: 0, method: o.method, paidTs: o.paidTs };
-      groups[key].total += S.orderTotal(o.items);
+    /* Payments ledger: every order paid today, however it was paid —
+       at the till (closed by the cashier) or from the guest's phone. */
+    var paidOrders = orders.filter(function (o) {
+      return o.pay === 'paid' && S.isToday(o.paidTs || o.ts);
     });
-    var hist = Object.keys(groups).map(function (k) { return groups[k]; }).sort(function (a, b) { return b.paidTs - a.paidTs; });
+    paidOrders.sort(function (a, b) { return (b.paidTs || b.ts) - (a.paidTs || a.ts); });
+    var byMethod = {};
+    var collectedTotal = 0;
+    paidOrders.forEach(function (o) {
+      var t = S.orderTotal(o.items);
+      collectedTotal += t;
+      var m = o.method || '—';
+      byMethod[m] = (byMethod[m] || 0) + t;
+    });
+    var totalsEl = document.getElementById('ledgerTotals');
     var histEl = document.getElementById('history');
-    if (!hist.length) {
-      histEl.innerHTML = '<p class="empty">No bills settled yet today.</p>';
+    if (!paidOrders.length) {
+      totalsEl.textContent = '';
+      histEl.innerHTML = '<p class="empty">No payments received yet today.</p>';
     } else {
-      histEl.innerHTML = hist.map(function (h) {
-        return '<div class="hist-row"><span><span class="h-main">Table ' + h.table + '</span> ' +
-          '<span class="h-meta">· ' + S.esc(h.method || '') + ' · ' + S.timeStr(h.paidTs) + '</span></span>' +
-          '<span class="h-amt">' + S.fmt(h.total) + '</span></div>';
+      var parts = METHODS.filter(function (m) { return byMethod[m]; }).map(function (m) {
+        return m + ' ' + S.fmt(byMethod[m]);
+      });
+      Object.keys(byMethod).forEach(function (m) {
+        if (METHODS.indexOf(m) === -1) parts.push(m + ' ' + S.fmt(byMethod[m]));
+      });
+      totalsEl.innerHTML = parts.join(' · ') + ' · <strong>Total collected ' + S.fmt(collectedTotal) + '</strong>';
+      histEl.innerHTML = paidOrders.map(function (o) {
+        return '<div class="hist-row"><span><span class="h-main">Table ' + o.table + '</span> ' +
+          '<span class="h-meta">· ' + S.esc(o.id) + ' · ' + S.esc(o.method || '') + ' · ' + S.timeStr(o.paidTs || o.ts) + '</span>' +
+          '<span class="pill pill-src">' + (o.closed ? 'Cashier' : 'Guest paid') + '</span></span>' +
+          '<span class="h-amt">' + S.fmt(S.orderTotal(o.items)) + '</span></div>';
       }).join('');
     }
 

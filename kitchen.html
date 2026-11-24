@@ -165,6 +165,41 @@
     .k-btn:hover{background:var(--gold-soft)}
     .reset-btn:hover{background:rgba(227,201,143,.12)}
   }
+  /* Kitchen record */
+  .k-record{
+    max-width:1440px;
+    margin:0 auto;
+    padding:4px 26px 46px;
+  }
+  .k-record h2{
+    font-family:"Cormorant Garamond",serif;
+    font-weight:600;
+    font-size:26px;
+    color:var(--sand);
+    display:flex;
+    align-items:baseline;
+    gap:10px;
+  }
+  .k-record h2::after{content:"";flex:1;height:2px;background:var(--gold);border-radius:2px;opacity:.55}
+  .k-rec-summary{margin-top:14px;font-size:16px;font-weight:600;color:var(--gold-soft)}
+  .k-rec-dishes{margin-top:5px;font-size:15px;color:var(--muted-dark);line-height:1.7}
+  .k-rec-dishes .d-label{font-weight:600;color:var(--sand)}
+  .k-rec-row{
+    display:flex;
+    align-items:baseline;
+    gap:12px;
+    flex-wrap:wrap;
+    background:var(--card-dark);
+    border:1px solid var(--line-dark);
+    border-radius:14px;
+    padding:12px 16px;
+    margin-top:10px;
+    font-size:15px;
+  }
+  .k-rec-time{font-weight:700;color:var(--gold-soft);white-space:nowrap}
+  .k-rec-table{font-weight:700;letter-spacing:.04em;white-space:nowrap}
+  .k-rec-id{color:var(--muted-dark);font-size:13.5px}
+  .k-rec-items{color:var(--sand)}
   @media (prefers-reduced-motion: reduce){
     .kcard.flash{animation:none}
     .k-btn,.reset-btn{transition:transform 0ms}
@@ -196,6 +231,11 @@
     <div id="col-ready"></div>
   </section>
 </main>
+
+<section class="k-record" aria-label="Kitchen record of orders served today">
+  <h2>Kitchen record — served today</h2>
+  <div id="kRecord"></div>
+</section>
 
 <script>
 /* Calypso demo — shared order store (same code in menu.html, kitchen.html, pos.html).
@@ -383,7 +423,11 @@ var CalypsoStore = (function () {
   }
 
   function setStatus(id, status) {
-    return updateOrders([id], function (o) { o.status = status; return true; });
+    return updateOrders([id], function (o) {
+      o.status = status;
+      if (status === 'served') o.servedTs = Date.now();
+      return true;
+    });
   }
 
   function payOrders(ids, method) {
@@ -531,12 +575,47 @@ var CalypsoStore = (function () {
     });
     orders.forEach(function (o) { nowSeen[o.id] = true; });
     seenIds = nowSeen;
+    renderRecord();
     document.querySelectorAll('.k-btn').forEach(function (btn) {
       btn.addEventListener('click', function () {
         S.setStatus(btn.getAttribute('data-id'), btn.getAttribute('data-next'));
         render();
       });
     });
+  }
+
+  function renderRecord() {
+    var served = S.loadOrders().filter(function (o) {
+      return o.status === 'served' && S.isToday(o.servedTs || o.ts);
+    });
+    served.sort(function (a, b) { return (b.servedTs || b.ts) - (a.servedTs || a.ts); });
+    var el = document.getElementById('kRecord');
+    if (!served.length) {
+      el.innerHTML = '<p class="empty">Nothing served yet today.</p>';
+      return;
+    }
+    var dishCount = 0;
+    var byDish = {};
+    served.forEach(function (o) {
+      o.items.forEach(function (it) {
+        dishCount += it.qty;
+        byDish[it.name] = (byDish[it.name] || 0) + it.qty;
+      });
+    });
+    var dishes = Object.keys(byDish).map(function (name) { return { name: name, qty: byDish[name] }; });
+    dishes.sort(function (a, b) { return (b.qty - a.qty) || (a.name < b.name ? -1 : 1); });
+    var html = '<p class="k-rec-summary">' + served.length + (served.length === 1 ? ' order' : ' orders') +
+      ' served · ' + dishCount + (dishCount === 1 ? ' dish' : ' dishes') + ' made</p>';
+    html += '<p class="k-rec-dishes"><span class="d-label">Dishes made today:</span> ' +
+      dishes.map(function (d) { return S.esc(d.name) + ' ×' + d.qty; }).join(' · ') + '</p>';
+    html += served.map(function (o) {
+      var items = o.items.map(function (it) { return it.qty + ' × ' + S.esc(it.name); }).join(' · ');
+      return '<div class="k-rec-row"><span class="k-rec-time">' + S.timeStr(o.servedTs || o.ts) + '</span>' +
+        '<span class="k-rec-table">TABLE ' + o.table + '</span>' +
+        '<span class="k-rec-id">' + S.esc(o.id) + '</span>' +
+        '<span class="k-rec-items">' + items + '</span></div>';
+    }).join('');
+    el.innerHTML = html;
   }
 
   document.getElementById('resetBtn').addEventListener('click', function () {
