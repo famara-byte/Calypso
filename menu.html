@@ -1,0 +1,890 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Calypso Bar and Restaurant — Digital Menu</title>
+<meta name="description" content="The digital menu of Calypso Bar and Restaurant, Cape Point Beach, Bakau, The Gambia. Garden restaurant and bar by the wildlife lagoon, open daily 09:00 – 22:00.">
+<meta name="theme-color" content="#0b1f13">
+<link rel="icon" href="icon.webp" type="image/webp">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,500;1,600&family=Jost:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg-dark:#0b1f13;
+    --surface-dark:#12291a;
+    --gold:#c9a35f;
+    --gold-soft:#e3c98f;
+    --sand:#f6f0e2;
+    --card:#fffdf7;
+    --ink:#1c2a20;
+    --muted:#5c6a5e;
+    --line:rgba(18,53,36,.14);
+    --line-dark:rgba(227,201,143,.18);
+    --radius:18px;
+    --ease-out:cubic-bezier(0.23,1,0.32,1);
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{
+    font-family:"Jost",system-ui,sans-serif;
+    background:var(--sand);
+    color:var(--ink);
+    font-size:16px;
+    line-height:1.5;
+    -webkit-font-smoothing:antialiased;
+  }
+  img{display:block;max-width:100%}
+  a{color:inherit}
+  :focus-visible{outline:2px solid var(--gold);outline-offset:3px;border-radius:6px}
+
+  /* ---------- Header ---------- */
+  .site-header{
+    background:var(--bg-dark);
+    color:var(--sand);
+    text-align:center;
+    padding:46px 20px 38px;
+  }
+  .site-header h1{
+    font-family:"Cormorant Garamond",serif;
+    font-weight:600;
+    font-size:52px;
+    line-height:1.05;
+    letter-spacing:.01em;
+  }
+  .site-header h1 .amp{color:var(--gold-soft);font-style:italic;font-weight:500}
+  .tagline{
+    font-family:"Cormorant Garamond",serif;
+    font-style:italic;
+    font-size:20px;
+    color:var(--gold-soft);
+    margin-top:10px;
+  }
+  .hours{
+    margin-top:16px;
+    font-size:13px;
+    font-weight:500;
+    letter-spacing:.18em;
+    text-transform:uppercase;
+    color:var(--sand);
+  }
+  .call-btn{
+    display:inline-flex;
+    align-items:center;
+    gap:9px;
+    margin-top:20px;
+    min-height:48px;
+    padding:12px 26px;
+    border-radius:999px;
+    background:var(--gold);
+    color:var(--ink);
+    font-weight:600;
+    font-size:16px;
+    text-decoration:none;
+    transition:transform 160ms var(--ease-out), background-color 200ms ease;
+  }
+  .call-btn:active{transform:scale(.97)}
+  .call-btn svg{width:18px;height:18px;flex:none}
+
+  /* ---------- Category nav ---------- */
+  .cat-nav{
+    position:sticky;
+    top:0;
+    z-index:20;
+    background:rgba(246,240,226,.94);
+    -webkit-backdrop-filter:blur(8px);
+    backdrop-filter:blur(8px);
+    border-bottom:1px solid var(--line);
+  }
+  .cat-nav-inner{
+    max-width:760px;
+    margin:0 auto;
+    display:flex;
+    gap:8px;
+    overflow-x:auto;
+    padding:10px 18px;
+    scrollbar-width:none;
+  }
+  .cat-nav-inner::-webkit-scrollbar{display:none}
+  .chip{
+    flex:none;
+    display:inline-flex;
+    align-items:center;
+    min-height:44px;
+    padding:0 16px;
+    border-radius:999px;
+    border:1px solid var(--line);
+    background:var(--card);
+    color:var(--ink);
+    font-size:14.5px;
+    font-weight:500;
+    text-decoration:none;
+    white-space:nowrap;
+    transition:background-color 200ms ease, color 200ms ease, border-color 200ms ease, transform 160ms var(--ease-out);
+  }
+  .chip:active{transform:scale(.97)}
+  .chip.active{
+    background:var(--surface-dark);
+    border-color:var(--surface-dark);
+    color:var(--sand);
+  }
+
+  /* ---------- Layout & sections ---------- */
+  .wrap{max-width:760px;margin:0 auto;padding:0 18px}
+  section{padding:38px 0 14px;scroll-margin-top:78px}
+  .sec-head{margin-bottom:8px}
+  .sec-head h2{
+    font-family:"Cormorant Garamond",serif;
+    font-weight:600;
+    font-size:31px;
+    line-height:1.15;
+  }
+  .sec-head::after{
+    content:"";
+    display:block;
+    width:38px;
+    height:2px;
+    background:var(--gold);
+    margin-top:10px;
+    border-radius:2px;
+  }
+
+  /* ---------- Menu items ---------- */
+  .item{padding:20px 0;border-bottom:1px solid var(--line)}
+  .item:last-child{border-bottom:none}
+  .photo-btn{
+    position:relative;
+    display:block;
+    width:100%;
+    padding:0;
+    border:none;
+    background:none;
+    cursor:pointer;
+    border-radius:var(--radius);
+    margin-bottom:14px;
+    transition:transform 160ms var(--ease-out);
+  }
+  .photo-btn:active{transform:scale(.985)}
+  .photo-btn img{
+    width:100%;
+    aspect-ratio:4/3;
+    object-fit:cover;
+    object-position:center;
+    border-radius:var(--radius);
+  }
+  .zoom-badge{
+    position:absolute;
+    right:10px;
+    bottom:10px;
+    width:36px;
+    height:36px;
+    border-radius:50%;
+    background:rgba(11,31,19,.72);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    pointer-events:none;
+  }
+  .zoom-badge svg{width:18px;height:18px}
+  @media (hover:hover) and (pointer:fine){
+    .photo-btn img{transition:transform 300ms var(--ease-out)}
+    .photo-btn:hover img{transform:scale(1.03)}
+    .call-btn:hover{background:var(--gold-soft)}
+  }
+  .item-head{display:flex;align-items:baseline;gap:10px}
+  .item-head h3{
+    font-family:"Cormorant Garamond",serif;
+    font-weight:600;
+    font-size:21.5px;
+    line-height:1.2;
+  }
+  .sig-star{color:var(--gold);font-size:15px;margin-left:5px;vertical-align:2px}
+  .dots{flex:1;border-bottom:2px dotted rgba(18,53,36,.28);transform:translateY(-4px);min-width:14px}
+  .price{
+    font-weight:600;
+    font-size:16.5px;
+    color:var(--surface-dark);
+    white-space:nowrap;
+  }
+  .desc{margin-top:4px;font-size:15.5px}
+  .ing{margin-top:3px;font-size:14px;color:var(--muted)}
+
+  /* ---------- Signatures (dark band) ---------- */
+  .signatures{
+    background:var(--bg-dark);
+    color:var(--sand);
+    margin-top:38px;
+    padding:42px 0 26px;
+    scroll-margin-top:64px;
+  }
+  .signatures .sec-head h2{color:var(--sand)}
+  .signatures .item{border-bottom-color:var(--line-dark)}
+  .signatures .dots{border-bottom-color:rgba(227,201,143,.35)}
+  .signatures .price{color:var(--gold-soft)}
+  .signatures .ing{color:rgba(246,240,226,.68)}
+
+  /* ---------- Footer ---------- */
+  .site-footer{
+    background:var(--bg-dark);
+    color:var(--sand);
+    text-align:center;
+    padding:44px 20px 48px;
+    margin-top:44px;
+  }
+  .site-footer .fname{
+    font-family:"Cormorant Garamond",serif;
+    font-weight:600;
+    font-size:27px;
+  }
+  .site-footer p{margin-top:7px;font-size:15px}
+  .site-footer .croc{color:var(--gold-soft);font-family:"Cormorant Garamond",serif;font-style:italic;font-size:17.5px}
+  .site-footer a{color:var(--gold-soft)}
+  .footer-links{margin-top:18px;display:flex;gap:12px;justify-content:center;flex-wrap:wrap}
+  .footer-links a{
+    display:inline-flex;
+    align-items:center;
+    min-height:44px;
+    padding:10px 20px;
+    border:1px solid var(--line-dark);
+    border-radius:999px;
+    text-decoration:none;
+    font-weight:500;
+    transition:transform 160ms var(--ease-out), background-color 200ms ease;
+  }
+  .footer-links a:active{transform:scale(.97)}
+
+  /* ---------- Photo viewer dialog ---------- */
+  dialog#viewer{
+    border:none;
+    padding:0;
+    background:transparent;
+    width:min(92vw,470px);
+    max-width:470px;
+    opacity:0;
+    transform:scale(.96);
+    transition:opacity 250ms var(--ease-out), transform 250ms var(--ease-out);
+  }
+  dialog#viewer[open]{opacity:1;transform:scale(1)}
+  @starting-style{
+    dialog#viewer[open]{opacity:0;transform:scale(.96)}
+    dialog#viewer[open]::backdrop{opacity:0}
+  }
+  dialog#viewer::backdrop{
+    background:rgba(11,31,19,.68);
+    opacity:1;
+    transition:opacity 250ms var(--ease-out);
+  }
+  .viewer-card{
+    background:var(--card);
+    border-radius:var(--radius);
+    overflow:hidden;
+    box-shadow:0 24px 60px rgba(11,31,19,.45);
+  }
+  .viewer-media{position:relative;background:var(--bg-dark)}
+  .viewer-media img{width:100%;max-height:60vh;object-fit:contain}
+  .viewer-close{
+    position:absolute;
+    top:10px;
+    right:10px;
+    width:44px;
+    height:44px;
+    border-radius:50%;
+    border:none;
+    background:rgba(11,31,19,.78);
+    color:var(--sand);
+    font-size:24px;
+    line-height:1;
+    cursor:pointer;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    transition:transform 160ms var(--ease-out), background-color 200ms ease;
+  }
+  .viewer-close:active{transform:scale(.94)}
+  .viewer-info{padding:18px 20px 22px}
+  .viewer-info .item-head h3{font-size:23px}
+
+  @media (min-width:720px){
+    .signatures .items{display:grid;grid-template-columns:1fr 1fr;gap:0 28px}
+    .signatures .item{border-bottom:1px solid var(--line-dark)}
+  }
+  @media (prefers-reduced-motion: reduce){
+    html{scroll-behavior:auto}
+    dialog#viewer{transform:none;transition:opacity 200ms ease}
+    dialog#viewer[open]{transform:none}
+    @starting-style{ dialog#viewer[open]{transform:none} }
+    .photo-btn,.call-btn,.chip,.footer-links a,.viewer-close{transition:transform 0ms}
+    .photo-btn img{transition:none}
+    .photo-btn:active,.call-btn:active,.chip:active,.footer-links a:active,.viewer-close:active{transform:none}
+  }
+</style>
+</head>
+<body>
+
+<header class="site-header">
+  <h1>Calypso Bar <span class="amp">&amp;</span> Restaurant</h1>
+  <p class="tagline">Garden restaurant &amp; bar by the wildlife lagoon — Cape Point Beach, Bakau · Est. 1988</p>
+  <p class="hours">Open daily 09:00 – 22:00</p>
+  <a class="call-btn" href="tel:+2203357788">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+    Call +220 335 7788
+  </a>
+</header>
+
+<nav class="cat-nav" aria-label="Menu sections">
+  <div class="cat-nav-inner" id="catNav">
+    <a class="chip" href="#signatures">Signatures</a>
+    <a class="chip" href="#starters">Starters</a>
+    <a class="chip" href="#seafood-grill">Seafood &amp; Grill</a>
+    <a class="chip" href="#meat-mains">Meat &amp; Mains</a>
+    <a class="chip" href="#burgers-salads">Burgers &amp; Salads</a>
+    <a class="chip" href="#breakfast-sweet">Breakfast &amp; Sweet</a>
+    <a class="chip" href="#drinks">Drinks</a>
+  </div>
+</nav>
+
+<main>
+
+<!-- House Signatures -->
+<section class="signatures" id="signatures">
+  <div class="wrap">
+    <div class="sec-head"><h2>House Signatures</h2></div>
+    <div class="items">
+
+      <article class="item">
+        <button class="photo-btn" type="button" aria-label="Enlarge photo: King prawns in filo pastry">
+          <img src="assets/dish-filo-prawns.jpg" alt="King prawns in filo pastry" loading="lazy">
+          <span class="zoom-badge"><svg viewBox="0 0 24 24" fill="none" stroke="#e3c98f" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/><path d="M11 8v6M8 11h6"/></svg></span>
+        </button>
+        <div class="item-text">
+          <div class="item-head"><h3>King prawns in filo pastry</h3><span class="dots"></span><span class="price">D450</span></div>
+          <p class="desc">With a sweet chilli dip</p>
+          <p class="ing">Cooked with: king prawns, filo pastry, garlic, lemon, sweet chilli and salad leaves.</p>
+        </div>
+      </article>
+
+      <article class="item">
+        <button class="photo-btn" type="button" aria-label="Enlarge photo: Fried garlic prawns">
+          <img src="assets/dish-garlic-prawns.jpg" alt="Fried garlic prawns" loading="lazy">
+          <span class="zoom-badge"><svg viewBox="0 0 24 24" fill="none" stroke="#e3c98f" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/><path d="M11 8v6M8 11h6"/></svg></span>
+        </button>
+        <div class="item-text">
+          <div class="item-head"><h3>Fried garlic prawns</h3><span class="dots"></span><span class="price">D700</span></div>
+          <p class="ing">Cooked with: prawns pan-fried in garlic butter, parsley, lemon and a touch of chilli.</p>
+        </div>
+      </article>
+
+      <article class="item">
+        <button class="photo-btn" type="button" aria-label="Enlarge photo: Barbecued prawn skewers">
+          <img src="assets/dish-prawn-skewers.jpg" alt="Barbecued prawn skewers" loading="lazy">
+          <span class="zoom-badge"><svg viewBox="0 0 24 24" fill="none" stroke="#e3c98f" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/><path d="M11 8v6M8 11h6"/></svg></span>
+        </button>
+        <div class="item-text">
+          <div class="item-head"><h3>Barbecued prawn skewers</h3><span class="dots"></span><span class="price">D850</span></div>
+          <p class="desc">With chips and dressed salad</p>
+          <p class="ing">Cooked with: king prawns, garlic, lemon, mixed peppers, herbs and olive oil.</p>
+        </div>
+      </article>
+
+      <article class="item">
+        <button class="photo-btn" type="button" aria-label="Enlarge photo: Seafood platter (for two)">
+          <img src="assets/dish-seafood-platter.jpg" alt="Seafood platter (for two)" loading="lazy">
+          <span class="zoom-badge"><svg viewBox="0 0 24 24" fill="none" stroke="#e3c98f" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/><path d="M11 8v6M8 11h6"/></svg></span>
+        </button>
+        <div class="item-text">
+          <div class="item-head"><h3>Seafood platter (for two)</h3><span class="dots"></span><span class="price">D1,800</span></div>
+          <p class="ing">Cooked with: grilled fish, king prawns, squid and octopus, with garlic butter, lemon and fresh herbs.</p>
+        </div>
+      </article>
+
+      <article class="item">
+        <button class="photo-btn" type="button" aria-label="Enlarge photo: Charcoal-grilled barracuda">
+          <img src="assets/dish-barracuda.jpg" alt="Charcoal-grilled barracuda" loading="lazy">
+          <span class="zoom-badge"><svg viewBox="0 0 24 24" fill="none" stroke="#e3c98f" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/><path d="M11 8v6M8 11h6"/></svg></span>
+        </button>
+        <div class="item-text">
+          <div class="item-head"><h3>Charcoal-grilled barracuda</h3><span class="dots"></span><span class="price">D750</span></div>
+          <p class="desc">With garlic butter</p>
+          <p class="ing">Cooked with: barracuda charcoal-grilled with garlic butter, lemon and herbs.</p>
+        </div>
+      </article>
+
+      <article class="item">
+        <button class="photo-btn" type="button" aria-label="Enlarge photo: Peppered steak">
+          <img src="assets/dish-steak.jpg" alt="Peppered steak" loading="lazy">
+          <span class="zoom-badge"><svg viewBox="0 0 24 24" fill="none" stroke="#e3c98f" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/><path d="M11 8v6M8 11h6"/></svg></span>
+        </button>
+        <div class="item-text">
+          <div class="item-head"><h3>Peppered steak</h3><span class="dots"></span><span class="price">D950</span></div>
+          <p class="desc">With chips</p>
+          <p class="ing">Cooked with: beef steak, cracked black peppercorn, cream, garlic and butter.</p>
+        </div>
+      </article>
+
+      <article class="item">
+        <button class="photo-btn" type="button" aria-label="Enlarge photo: The Calypso Burger">
+          <img src="assets/dish-burger.jpg" alt="The Calypso Burger" loading="lazy">
+          <span class="zoom-badge"><svg viewBox="0 0 24 24" fill="none" stroke="#e3c98f" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/><path d="M11 8v6M8 11h6"/></svg></span>
+        </button>
+        <div class="item-text">
+          <div class="item-head"><h3>The Calypso Burger</h3><span class="dots"></span><span class="price">D600</span></div>
+          <p class="ing">Cooked with: homemade beef patty, cheddar, lettuce, tomato, red onion and burger sauce in a toasted bun — with fries.</p>
+        </div>
+      </article>
+
+      <article class="item">
+        <button class="photo-btn" type="button" aria-label="Enlarge photo: Crêpes">
+          <img src="assets/dish-crepes.jpg" alt="Crêpes" loading="lazy">
+          <span class="zoom-badge"><svg viewBox="0 0 24 24" fill="none" stroke="#e3c98f" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/><path d="M11 8v6M8 11h6"/></svg></span>
+        </button>
+        <div class="item-text">
+          <div class="item-head"><h3>Crêpes</h3><span class="dots"></span><span class="price">D350</span></div>
+          <p class="desc">With banana and maple syrup</p>
+          <p class="ing">Cooked with: flour, eggs and milk batter, filled with banana and maple syrup, dusted with sugar.</p>
+        </div>
+      </article>
+
+    </div>
+  </div>
+</section>
+
+<!-- Starters & Light Bites -->
+<section id="starters">
+  <div class="wrap">
+    <div class="sec-head"><h2>Starters &amp; Light Bites</h2></div>
+
+    <article class="item">
+      <button class="photo-btn" type="button" aria-label="Enlarge photo: King prawns in filo pastry">
+        <img src="assets/dish-filo-prawns.jpg" alt="King prawns in filo pastry" loading="lazy">
+        <span class="zoom-badge"><svg viewBox="0 0 24 24" fill="none" stroke="#e3c98f" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/><path d="M11 8v6M8 11h6"/></svg></span>
+      </button>
+      <div class="item-text">
+        <div class="item-head"><h3>King prawns in filo pastry<span class="sig-star" aria-hidden="true">★</span></h3><span class="dots"></span><span class="price">D450</span></div>
+        <p class="desc">With a sweet chilli dip</p>
+        <p class="ing">Cooked with: king prawns, filo pastry, garlic, lemon, sweet chilli and salad leaves.</p>
+      </div>
+    </article>
+
+    <article class="item">
+      <div class="item-text">
+        <div class="item-head"><h3>Chinese spring rolls</h3><span class="dots"></span><span class="price">D300</span></div>
+        <p class="ing">Cooked with: cabbage, carrots, spring onion and mixed vegetables in crisp pastry, with sweet chilli dip.</p>
+      </div>
+    </article>
+
+    <article class="item">
+      <div class="item-text">
+        <div class="item-head"><h3>Indian chicken satay</h3><span class="dots"></span><span class="price">D350</span></div>
+        <p class="ing">Cooked with: chicken marinated in turmeric, garlic and ginger, grilled and served with peanut sauce.</p>
+      </div>
+    </article>
+
+    <article class="item">
+      <div class="item-text">
+        <div class="item-head"><h3>Garlic bread</h3><span class="dots"></span><span class="price">D150</span></div>
+        <p class="ing">Cooked with: baguette, garlic butter, parsley and mixed herbs, toasted until crisp.</p>
+      </div>
+    </article>
+
+    <article class="item">
+      <div class="item-text">
+        <div class="item-head"><h3>A pint of prawns</h3><span class="dots"></span><span class="price">D600</span></div>
+        <p class="ing">Cooked with: chilled prawns, lemon, garlic mayonnaise and crisp salad leaves.</p>
+      </div>
+    </article>
+
+    <article class="item">
+      <div class="item-text">
+        <div class="item-head"><h3>Tapas selection</h3><span class="dots"></span><span class="price">from D250</span></div>
+        <p class="ing">Cooked with: a changing mix of olives, grilled vegetables, seafood and bread — ask for today’s selection.</p>
+      </div>
+    </article>
+
+  </div>
+</section>
+
+<!-- Seafood & Grill -->
+<section id="seafood-grill">
+  <div class="wrap">
+    <div class="sec-head"><h2>Seafood &amp; Grill</h2></div>
+
+    <article class="item">
+      <button class="photo-btn" type="button" aria-label="Enlarge photo: Fried garlic prawns">
+        <img src="assets/dish-garlic-prawns.jpg" alt="Fried garlic prawns" loading="lazy">
+        <span class="zoom-badge"><svg viewBox="0 0 24 24" fill="none" stroke="#e3c98f" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/><path d="M11 8v6M8 11h6"/></svg></span>
+      </button>
+      <div class="item-text">
+        <div class="item-head"><h3>Fried garlic prawns<span class="sig-star" aria-hidden="true">★</span></h3><span class="dots"></span><span class="price">D700</span></div>
+        <p class="ing">Cooked with: prawns pan-fried in garlic butter, parsley, lemon and a touch of chilli.</p>
+      </div>
+    </article>
+
+    <article class="item">
+      <button class="photo-btn" type="button" aria-label="Enlarge photo: Barbecued prawn skewers">
+        <img src="assets/dish-prawn-skewers.jpg" alt="Barbecued prawn skewers" loading="lazy">
+        <span class="zoom-badge"><svg viewBox="0 0 24 24" fill="none" stroke="#e3c98f" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/><path d="M11 8v6M8 11h6"/></svg></span>
+      </button>
+      <div class="item-text">
+        <div class="item-head"><h3>Barbecued prawn skewers<span class="sig-star" aria-hidden="true">★</span></h3><span class="dots"></span><span class="price">D850</span></div>
+        <p class="desc">With chips and dressed salad</p>
+        <p class="ing">Cooked with: king prawns, garlic, lemon, mixed peppers, herbs and olive oil.</p>
+      </div>
+    </article>
+
+    <article class="item">
+      <button class="photo-btn" type="button" aria-label="Enlarge photo: Seafood platter (for two)">
+        <img src="assets/dish-seafood-platter.jpg" alt="Seafood platter (for two)" loading="lazy">
+        <span class="zoom-badge"><svg viewBox="0 0 24 24" fill="none" stroke="#e3c98f" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/><path d="M11 8v6M8 11h6"/></svg></span>
+      </button>
+      <div class="item-text">
+        <div class="item-head"><h3>Seafood platter (for two)<span class="sig-star" aria-hidden="true">★</span></h3><span class="dots"></span><span class="price">D1,800</span></div>
+        <p class="ing">Cooked with: grilled fish, king prawns, squid and octopus, with garlic butter, lemon and fresh herbs.</p>
+      </div>
+    </article>
+
+    <article class="item">
+      <button class="photo-btn" type="button" aria-label="Enlarge photo: Charcoal-grilled barracuda">
+        <img src="assets/dish-barracuda.jpg" alt="Charcoal-grilled barracuda" loading="lazy">
+        <span class="zoom-badge"><svg viewBox="0 0 24 24" fill="none" stroke="#e3c98f" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/><path d="M11 8v6M8 11h6"/></svg></span>
+      </button>
+      <div class="item-text">
+        <div class="item-head"><h3>Charcoal-grilled barracuda<span class="sig-star" aria-hidden="true">★</span></h3><span class="dots"></span><span class="price">D750</span></div>
+        <p class="desc">With garlic butter</p>
+        <p class="ing">Cooked with: barracuda charcoal-grilled with garlic butter, lemon and herbs.</p>
+      </div>
+    </article>
+
+    <article class="item">
+      <div class="item-text">
+        <div class="item-head"><h3>Grilled barracuda and butterfish</h3><span class="dots"></span><span class="price">D700</span></div>
+        <p class="ing">Cooked with: barracuda and butterfish grilled with garlic butter, lemon and fresh herbs.</p>
+      </div>
+    </article>
+
+    <article class="item">
+      <div class="item-text">
+        <div class="item-head"><h3>Beer-battered fish goujons</h3><span class="dots"></span><span class="price">D550</span></div>
+        <p class="ing">Cooked with: white fish in beer batter, with lemon and tartar sauce.</p>
+      </div>
+    </article>
+
+    <article class="item">
+      <div class="item-text">
+        <div class="item-head"><h3>Scampi and chips</h3><span class="dots"></span><span class="price">D800</span></div>
+        <p class="desc">Whole king prawns in batter</p>
+        <p class="ing">Cooked with: whole king prawns in golden batter, with chips, lemon and tartar sauce.</p>
+      </div>
+    </article>
+
+  </div>
+</section>
+
+<!-- Meat & Mains -->
+<section id="meat-mains">
+  <div class="wrap">
+    <div class="sec-head"><h2>Meat &amp; Mains</h2></div>
+
+    <article class="item">
+      <button class="photo-btn" type="button" aria-label="Enlarge photo: Peppered steak">
+        <img src="assets/dish-steak.jpg" alt="Peppered steak" loading="lazy">
+        <span class="zoom-badge"><svg viewBox="0 0 24 24" fill="none" stroke="#e3c98f" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/><path d="M11 8v6M8 11h6"/></svg></span>
+      </button>
+      <div class="item-text">
+        <div class="item-head"><h3>Peppered steak<span class="sig-star" aria-hidden="true">★</span></h3><span class="dots"></span><span class="price">D950</span></div>
+        <p class="desc">With chips</p>
+        <p class="ing">Cooked with: beef steak, cracked black peppercorn, cream, garlic and butter.</p>
+      </div>
+    </article>
+
+    <article class="item">
+      <div class="item-text">
+        <div class="item-head"><h3>Steaks from the grill</h3><span class="dots"></span><span class="price">D900</span></div>
+        <p class="ing">Cooked with: beef steak, garlic butter and herbs, grilled to your liking.</p>
+      </div>
+    </article>
+
+    <article class="item">
+      <div class="item-text">
+        <div class="item-head"><h3>Chicken Yassa</h3><span class="dots"></span><span class="price">D550</span></div>
+        <p class="ing">Cooked with: chicken marinated in lemon, onion and mustard, grilled and simmered — served with rice.</p>
+      </div>
+    </article>
+
+  </div>
+</section>
+
+<!-- Burgers, Sandwiches & Salads -->
+<section id="burgers-salads">
+  <div class="wrap">
+    <div class="sec-head"><h2>Burgers, Sandwiches &amp; Salads</h2></div>
+
+    <article class="item">
+      <button class="photo-btn" type="button" aria-label="Enlarge photo: The Calypso Burger">
+        <img src="assets/dish-burger.jpg" alt="The Calypso Burger" loading="lazy">
+        <span class="zoom-badge"><svg viewBox="0 0 24 24" fill="none" stroke="#e3c98f" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/><path d="M11 8v6M8 11h6"/></svg></span>
+      </button>
+      <div class="item-text">
+        <div class="item-head"><h3>The Calypso Burger<span class="sig-star" aria-hidden="true">★</span></h3><span class="dots"></span><span class="price">D600</span></div>
+        <p class="ing">Cooked with: homemade beef patty, cheddar, lettuce, tomato, red onion and burger sauce in a toasted bun — with fries.</p>
+      </div>
+    </article>
+
+    <article class="item">
+      <div class="item-text">
+        <div class="item-head"><h3>Homemade beef burgers</h3><span class="dots"></span><span class="price">D550</span></div>
+        <p class="ing">Cooked with: beef patty, lettuce, tomato and onion in a toasted bun — with fries.</p>
+      </div>
+    </article>
+
+    <article class="item">
+      <div class="item-text">
+        <div class="item-head"><h3>Sandwiches and paninis</h3><span class="dots"></span><span class="price">from D300</span></div>
+        <p class="ing">Made with: fresh bread, cheese, tomato and lettuce, with your choice of chicken, tuna or vegetables.</p>
+      </div>
+    </article>
+
+    <article class="item">
+      <div class="item-text">
+        <div class="item-head"><h3>Fresh salads</h3><span class="dots"></span><span class="price">from D300</span></div>
+        <p class="ing">Made with: lettuce, tomato, cucumber, peppers and olives with a lemon and olive oil dressing.</p>
+      </div>
+    </article>
+
+  </div>
+</section>
+
+<!-- Breakfast & Sweet -->
+<section id="breakfast-sweet">
+  <div class="wrap">
+    <div class="sec-head"><h2>Breakfast &amp; Sweet</h2></div>
+
+    <article class="item">
+      <button class="photo-btn" type="button" aria-label="Enlarge photo: Crêpes">
+        <img src="assets/dish-crepes.jpg" alt="Crêpes" loading="lazy">
+        <span class="zoom-badge"><svg viewBox="0 0 24 24" fill="none" stroke="#e3c98f" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/><path d="M11 8v6M8 11h6"/></svg></span>
+      </button>
+      <div class="item-text">
+        <div class="item-head"><h3>Crêpes<span class="sig-star" aria-hidden="true">★</span></h3><span class="dots"></span><span class="price">D350</span></div>
+        <p class="desc">With banana and maple syrup</p>
+        <p class="ing">Cooked with: flour, eggs and milk batter, filled with banana and maple syrup, dusted with sugar.</p>
+      </div>
+    </article>
+
+    <article class="item">
+      <div class="item-text">
+        <div class="item-head"><h3>Desserts of the day</h3><span class="dots"></span><span class="price">from D250</span></div>
+        <p class="ing">Made with: seasonal fruit, cream and house sauces — ask your server for today’s dessert.</p>
+      </div>
+    </article>
+
+  </div>
+</section>
+
+<!-- Drinks & Cocktails -->
+<section id="drinks">
+  <div class="wrap">
+    <div class="sec-head"><h2>Drinks &amp; Cocktails</h2></div>
+
+    <article class="item">
+      <button class="photo-btn" type="button" aria-label="Enlarge photo: Frozen strawberry daiquiri">
+        <img src="assets/drink-daiquiri.jpg" alt="Frozen strawberry daiquiri" loading="lazy">
+        <span class="zoom-badge"><svg viewBox="0 0 24 24" fill="none" stroke="#e3c98f" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/><path d="M11 8v6M8 11h6"/></svg></span>
+      </button>
+      <div class="item-text">
+        <div class="item-head"><h3>Frozen strawberry daiquiri</h3><span class="dots"></span><span class="price">D350</span></div>
+        <p class="desc">Blended icy, with fresh strawberry and lime</p>
+        <p class="ing">Made with: white rum, fresh strawberries, lime juice, sugar and crushed ice.</p>
+      </div>
+    </article>
+
+    <article class="item">
+      <button class="photo-btn" type="button" aria-label="Enlarge photo: Signature cocktails">
+        <img src="assets/drink-cocktails.jpg" alt="Signature cocktails" loading="lazy">
+        <span class="zoom-badge"><svg viewBox="0 0 24 24" fill="none" stroke="#e3c98f" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/><path d="M11 8v6M8 11h6"/></svg></span>
+      </button>
+      <div class="item-text">
+        <div class="item-head"><h3>Signature cocktails</h3><span class="dots"></span><span class="price">from D300</span></div>
+        <p class="desc">Mixed at the bar, made for golden hour</p>
+        <p class="ing">Made with: house spirits, tropical fruit juices, fresh lime and fruit garnish.</p>
+      </div>
+    </article>
+
+    <article class="item">
+      <button class="photo-btn" type="button" aria-label="Enlarge photo: Local beer">
+        <img src="assets/drink-beer.jpg" alt="Local beer" loading="lazy">
+        <span class="zoom-badge"><svg viewBox="0 0 24 24" fill="none" stroke="#e3c98f" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/><path d="M11 8v6M8 11h6"/></svg></span>
+      </button>
+      <div class="item-text">
+        <div class="item-head"><h3>Local beer</h3><span class="dots"></span><span class="price">D150</span></div>
+        <p class="desc">Served ice-cold, best at a lagoon-side table</p>
+        <p class="ing">Made with: brewed lager from malt, hops and yeast — served ice-cold.</p>
+      </div>
+    </article>
+
+    <article class="item">
+      <div class="item-text">
+        <div class="item-head"><h3>Imported beer</h3><span class="dots"></span><span class="price">D200</span></div>
+        <p class="ing">Made with: brewed lager from malt, hops and yeast — served chilled.</p>
+      </div>
+    </article>
+
+    <article class="item">
+      <div class="item-text">
+        <div class="item-head"><h3>Wine by the glass</h3><span class="dots"></span><span class="price">D300</span></div>
+        <p class="desc">Poured from the house selection — ask your server for today's red, white or rosé.</p>
+      </div>
+    </article>
+
+    <article class="item">
+      <button class="photo-btn" type="button" aria-label="Enlarge photo: Fresh tropical juices">
+        <img src="assets/drink-juice.jpg" alt="Fresh tropical juices" loading="lazy">
+        <span class="zoom-badge"><svg viewBox="0 0 24 24" fill="none" stroke="#e3c98f" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/><path d="M11 8v6M8 11h6"/></svg></span>
+      </button>
+      <div class="item-text">
+        <div class="item-head"><h3>Fresh tropical juices</h3><span class="dots"></span><span class="price">D150</span></div>
+        <p class="desc">Mango, pineapple and the fruit of the day</p>
+        <p class="ing">Made with: fresh mango, pineapple and seasonal tropical fruit, pressed to order.</p>
+      </div>
+    </article>
+
+    <article class="item">
+      <div class="item-text">
+        <div class="item-head"><h3>Soft drinks</h3><span class="dots"></span><span class="price">D80</span></div>
+        <p class="desc">Chilled soft drinks — Coca-Cola, Fanta, Sprite and local favourites.</p>
+      </div>
+    </article>
+
+    <article class="item">
+      <div class="item-text">
+        <div class="item-head"><h3>Coffee &amp; tea</h3><span class="dots"></span><span class="price">D100</span></div>
+        <p class="ing">Made with: freshly brewed coffee or tea, served with milk and sugar to taste.</p>
+      </div>
+    </article>
+
+  </div>
+</section>
+
+</main>
+
+<footer class="site-footer">
+  <p class="fname">Calypso Bar &amp; Restaurant</p>
+  <p>Cape Point Beach, Bakau, The Gambia — next to Ocean Bay Hotel</p>
+  <p>Open daily 09:00 – 22:00</p>
+  <p class="croc">Crocodiles fed daily at 4:00 pm</p>
+  <div class="footer-links">
+    <a href="tel:+2203357788">Call +220 335 7788</a>
+    <a href="index.html">Visit our website</a>
+  </div>
+</footer>
+
+<dialog id="viewer" aria-label="Photo viewer">
+  <div class="viewer-card">
+    <div class="viewer-media">
+      <img id="viewerImg" src="" alt="">
+      <button class="viewer-close" id="viewerClose" type="button" aria-label="Close photo viewer">&times;</button>
+    </div>
+    <div class="viewer-info" id="viewerInfo"></div>
+  </div>
+</dialog>
+
+<script>
+(function () {
+  var dialog = document.getElementById('viewer');
+  var viewerImg = document.getElementById('viewerImg');
+  var viewerInfo = document.getElementById('viewerInfo');
+  var closeBtn = document.getElementById('viewerClose');
+  var pushed = false;
+  var closedByPop = false;
+
+  function openViewer(btn) {
+    var item = btn.closest('.item');
+    if (!item) return;
+    var img = item.querySelector('img');
+    var text = item.querySelector('.item-text');
+    if (img) {
+      viewerImg.src = img.getAttribute('src');
+      viewerImg.alt = img.getAttribute('alt') || '';
+    }
+    if (text) {
+      viewerInfo.replaceChildren(text.cloneNode(true));
+    }
+    if (typeof dialog.showModal === 'function') {
+      dialog.showModal();
+      try {
+        history.pushState({ calypsoViewer: true }, '');
+        pushed = true;
+      } catch (e) {
+        pushed = false;
+      }
+    }
+  }
+
+  function requestClose() {
+    if (pushed) {
+      history.back();
+    } else if (dialog.open) {
+      dialog.close();
+    }
+  }
+
+  document.querySelectorAll('.photo-btn').forEach(function (btn) {
+    btn.addEventListener('click', function () { openViewer(btn); });
+  });
+
+  closeBtn.addEventListener('click', requestClose);
+
+  dialog.addEventListener('click', function (e) {
+    if (e.target === dialog) requestClose();
+  });
+
+  window.addEventListener('popstate', function () {
+    if (dialog.open) {
+      closedByPop = true;
+      dialog.close();
+    }
+  });
+
+  dialog.addEventListener('close', function () {
+    if (pushed && !closedByPop) {
+      try { history.back(); } catch (e) {}
+    }
+    pushed = false;
+    closedByPop = false;
+  });
+
+  /* Scrollspy: mark the chip of the section being read */
+  var chips = {};
+  document.querySelectorAll('.cat-nav .chip').forEach(function (chip) {
+    chips[chip.getAttribute('href').slice(1)] = chip;
+  });
+  var nav = document.getElementById('catNav');
+  var reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  function setActive(id) {
+    Object.keys(chips).forEach(function (key) {
+      chips[key].classList.toggle('active', key === id);
+    });
+    var chip = chips[id];
+    if (chip && nav) {
+      var target = chip.offsetLeft - 24;
+      if (Math.abs(nav.scrollLeft - target) > 4) {
+        nav.scrollTo({ left: target, behavior: reduceMotion ? 'auto' : 'smooth' });
+      }
+    }
+  }
+
+  if ('IntersectionObserver' in window) {
+    var spy = new IntersectionObserver(function (entries) {
+      entries.forEach(function (entry) {
+        if (entry.isIntersecting) setActive(entry.target.id);
+      });
+    }, { rootMargin: '-30% 0px -60% 0px', threshold: 0 });
+    document.querySelectorAll('main section[id]').forEach(function (sec) {
+      spy.observe(sec);
+    });
+  }
+})();
+</script>
+</body>
+</html>
